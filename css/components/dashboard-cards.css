@@ -1,0 +1,4 @@
+/* Legacy compatibility file.
+   Shared Fleet surfaces, KPI cards and status components now live in fleet-ui.css.
+   Shared icon/close buttons live in buttons.css.
+   Do not add page-specific duplicates here. */

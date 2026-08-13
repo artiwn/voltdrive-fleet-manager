@@ -1,0 +1,34 @@
+*,*::before,*::after{box-sizing:border-box}html{font-size:16px}html,body{min-height:100%;margin:0}body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button,input{font:inherit}button{border:0}a{color:inherit;text-decoration:none}img,svg{display:block;max-width:100%}
+
+/* Project-wide alignment fixes for compact icons and stacked copy. */
+[class*="-icon"]{line-height:1}
+[class*="-icon"][class*="activity-icon"],[class*="-icon"][class*="transaction-icon"],[class*="-icon"][class*="security-icon"],[class*="-icon"][class*="support-stat-icon"]{align-items:center;justify-content:center;text-align:center}
+
+/* Shared portal scrollbar — scoped only to real scroll containers.
+   Do NOT use universal *::-webkit-scrollbar here: it forces Chrome to
+   evaluate scrollbar pseudo-elements for every DOM node on large pages. */
+:is(html,body,.sidebar,.table-wrap,.ui-drawer__body,.ui-dialog__body,.ui-tabs,.energy-forecast,.settings-tabs,.report-trend-chart){
+  scrollbar-width:thin;
+  scrollbar-color:#34343b transparent;
+}
+:is(html,body,.sidebar,.table-wrap,.ui-drawer__body,.ui-dialog__body,.ui-tabs,.energy-forecast,.settings-tabs,.report-trend-chart)::-webkit-scrollbar{
+  width:8px;
+  height:8px;
+}
+:is(html,body,.sidebar,.table-wrap,.ui-drawer__body,.ui-dialog__body,.ui-tabs,.energy-forecast,.settings-tabs,.report-trend-chart)::-webkit-scrollbar-track{
+  background:transparent;
+}
+:is(html,body,.sidebar,.table-wrap,.ui-drawer__body,.ui-dialog__body,.ui-tabs,.energy-forecast,.settings-tabs,.report-trend-chart)::-webkit-scrollbar-thumb{
+  background:#34343b;
+  border:2px solid transparent;
+  border-radius:999px;
+  background-clip:padding-box;
+}
+:is(html,body,.sidebar,.table-wrap,.ui-drawer__body,.ui-dialog__body,.ui-tabs,.energy-forecast,.settings-tabs,.report-trend-chart)::-webkit-scrollbar-thumb:hover{
+  background:#484850;
+  border:2px solid transparent;
+  background-clip:padding-box;
+}
+:is(html,body,.sidebar,.table-wrap,.ui-drawer__body,.ui-dialog__body,.ui-tabs,.energy-forecast,.settings-tabs,.report-trend-chart)::-webkit-scrollbar-corner{
+  background:transparent;
+}
