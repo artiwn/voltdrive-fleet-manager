@@ -1,0 +1,61 @@
+<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b0b0d"><title>Vehicles — VoltDrive Fleet</title>
+<link rel="stylesheet" href="./css/core/reset.css"><link rel="stylesheet" href="./css/core/variables.css"><link rel="stylesheet" href="./css/core/typography.css"><link rel="stylesheet" href="./css/components/buttons.css"><link rel="stylesheet" href="./css/components/forms.css"><link rel="stylesheet" href="./css/components/fleet-ui.css"><link rel="stylesheet" href="./css/layout/app-layout.css"><link rel="stylesheet" href="./css/layout/sidebar.css"><link rel="stylesheet" href="./css/layout/header.css"><link rel="stylesheet" href="./css/pages/fleet.css"><link rel="stylesheet" href="./css/pages/shell-fixes.css"></head>
+<body class="app-page"><div class="app-shell"><aside class="sidebar" id="sidebar"><a class="sidebar__brand" href="./dashboard.html"><span class="sidebar__mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 4.5 13h6L9 22l10.5-13h-6L13 2Z"/></svg></span><span>VoltDrive</span></a><div class="sidebar__caption">Fleet Manager</div><nav class="sidebar__nav" aria-label="Fleet navigation">
+  <div class="sidebar__group"><div class="sidebar__group-title">Overview</div>
+    <a class="nav-link" data-nav="dashboard" href="./dashboard.html"><span class="nav-link__icon">⌂</span><span>Dashboard</span></a>
+    <a class="nav-link" data-nav="operations" href="./operations.html"><span class="nav-link__icon">◉</span><span>Live Operations</span></a>
+  </div>
+  <div class="sidebar__group"><div class="sidebar__group-title">Fleet</div>
+    <a class="nav-link is-active" data-nav="vehicles" href="./vehicles.html"><span class="nav-link__icon">◇</span><span>Vehicles</span></a>
+    <a class="nav-link" data-nav="drivers" href="./drivers.html"><span class="nav-link__icon">◎</span><span>Drivers</span></a>
+    <a class="nav-link" data-nav="schedules" href="./schedules.html"><span class="nav-link__icon">◷</span><span>Schedules</span></a>
+  </div>
+  <div class="sidebar__group"><div class="sidebar__group-title">Charging</div>
+    <a class="nav-link" data-nav="depot" href="./depot.html"><span class="nav-link__icon">ϟ</span><span>Depot & Chargers</span></a>
+    <a class="nav-link" data-nav="sessions" href="./sessions.html"><span class="nav-link__icon">↯</span><span>Charging Sessions</span></a>
+    <a class="nav-link" data-nav="reservations" href="./reservations.html"><span class="nav-link__icon">▣</span><span>Reservations</span></a>
+  </div>
+  <div class="sidebar__group"><div class="sidebar__group-title">Energy & Finance</div>
+    <a class="nav-link" data-nav="energy" href="./energy.html"><span class="nav-link__icon">∿</span><span>Energy</span></a>
+    <a class="nav-link" data-nav="billing" href="./billing.html"><span class="nav-link__icon">¤</span><span>Billing</span></a>
+    <a class="nav-link" data-nav="plan" href="./fleet-plan.html"><span class="nav-link__icon">★</span><span>Fleet Plan</span></a>
+    <a class="nav-link" data-nav="home-charging" href="./home-charging.html"><span class="nav-link__icon">⌂</span><span>Home Charging</span></a>
+  </div>
+  <div class="sidebar__group"><div class="sidebar__group-title">Analytics</div>
+    <a class="nav-link" data-nav="reports" href="./reports.html"><span class="nav-link__icon">▥</span><span>Reports</span></a>
+    <a class="nav-link" data-nav="alerts" href="./alerts.html"><span class="nav-link__icon">!</span><span>Alerts</span><span class="nav-link__badge" id="alert-badge">4</span></a>
+  </div>
+  <div class="sidebar__group"><div class="sidebar__group-title">Administration</div>
+    <a class="nav-link" data-nav="users" href="./users.html"><span class="nav-link__icon">♙</span><span>Users & Permissions</span></a>
+    <a class="nav-link" data-nav="settings" href="./fleet-settings.html"><span class="nav-link__icon">⚙</span><span>Fleet Settings</span></a>
+  </div>
+</nav><div class="sidebar__footer"><div class="sidebar__user"><span class="sidebar__avatar">NP</span><span><strong data-manager-name>Narek Petrosyan</strong><span data-company-name>Ararat Mobility</span></span></div></div></aside><div class="mobile-overlay" id="mobile-overlay"></div><div class="app-main"><header class="app-header"><div class="header__left"><button class="header__menu" id="menu-toggle" type="button">☰</button><div class="header__title"><strong>Vehicles</strong><span>Battery and departure information</span></div></div><div class="header__right"><span class="role-chip">Fleet Manager</span><div class="header-control"><span>Depot</span><strong data-depot-name>Yerevan Central Depot</strong></div><a class="header-control header-icon" href="./alerts.html" aria-label="Alerts">!<span class="header-icon__dot"></span></a></div></header><main class="page-content vehicles-page">
+<section class="fleet-hero fleet-hero--vehicles"><div><span class="eyebrow">Fleet directory</span><h1>Vehicles</h1><p>Manage vehicle readiness, technical profile, driver assignment, charging and operating cost.</p></div><div class="hero-actions"><button class="button" id="simulate-button" type="button">Simulate 10 min</button><button class="button button--primary" id="add-vehicle" type="button">+ Add vehicle</button></div></section>
+<section class="vehicle-summary-grid vehicle-summary-grid--v2" aria-label="Vehicle summary">
+ <div class="vehicle-summary-card"><span>Total vehicles</span><strong id="summary-total">0</strong><small>Registered in fleet</small></div>
+ <div class="vehicle-summary-card"><span>Charging now</span><strong id="summary-charging">0</strong><small>Active depot sessions</small></div>
+ <div class="vehicle-summary-card"><span>Ready to depart</span><strong id="summary-ready">0</strong><small>At or above target</small></div>
+ <div class="vehicle-summary-card vehicle-summary-card--risk"><span>At risk</span><strong id="summary-risk">0</strong><small>Requires manager attention</small></div>
+ <div class="vehicle-summary-card"><span>Fleet battery</span><strong id="summary-soc">0%</strong><small>Average state of charge</small></div>
+</section>
+<section class="ui-toolbar vehicle-toolbar panel"><div class="ui-toolbar__group vehicle-toolbar__left"><label class="ui-search vehicle-search"><span>⌕</span><input id="vehicle-search" placeholder="Search vehicle, plate, driver or route"></label><select id="status-filter"><option value="all">All statuses</option><option value="charging">Charging</option><option value="ready">Ready</option><option value="risk">At risk</option><option value="queued">Queued</option></select><select id="priority-filter"><option value="all">All priorities</option><option value="critical">Critical</option><option value="high">High</option><option value="normal">Normal</option><option value="low">Low</option></select><select class="ui-select" id="vehicle-sort"><option value="departure">Sort: next departure</option><option value="soc">Sort: lowest SOC</option><option value="name">Sort: vehicle name</option><option value="cost">Sort: monthly cost</option></select></div><div class="vehicle-toolbar__right"><span id="vehicle-count">0 vehicles</span></div></section>
+<section class="panel vehicle-list-panel"><div class="table-wrap"><table class="fleet-table vehicle-table"><thead><tr><th>Vehicle</th><th>Driver / group</th><th>Readiness</th><th>Next departure</th><th>Charging</th><th>Month usage</th><th>Status</th><th></th></tr></thead><tbody id="vehicle-table"></tbody></table></div></section>
+
+<div class="ui-drawer-backdrop vehicle-drawer-backdrop" id="vehicle-drawer-backdrop" hidden></div>
+<aside class="ui-drawer vehicle-drawer" id="vehicle-drawer" aria-hidden="true">
+ <div class="ui-drawer__header vehicle-drawer__header"><div><span class="panel-kicker">Vehicle profile</span><h2 id="drawer-title">Vehicle</h2><p id="drawer-subtitle">—</p></div><button class="ui-close" id="drawer-close" type="button" aria-label="Close">×</button></div>
+ <div class="ui-drawer__body vehicle-drawer__body" id="drawer-body"></div>
+ <div class="ui-drawer__footer vehicle-drawer__footer"><button class="button" id="drawer-edit" type="button">Edit vehicle</button><button class="button" id="drawer-driver" type="button">Assign driver</button><button class="button button--primary" id="drawer-operations" type="button">Open operations</button></div>
+</aside>
+
+<dialog class="ui-dialog ops-dialog vehicle-dialog" id="vehicle-dialog"><form method="dialog" id="vehicle-form"><div class="ui-dialog__header ops-dialog__header"><div><h2 id="vehicle-dialog-title">Add vehicle</h2><p id="vehicle-dialog-copy">Create or update the fleet vehicle profile.</p></div><button class="ui-close" value="cancel" type="submit" aria-label="Close">×</button></div><div class="ui-dialog__body ops-dialog__body vehicle-form-grid">
+ <label><span>Vehicle name</span><input id="form-name" required></label><label><span>Registration plate</span><input id="form-plate" required></label>
+ <label><span>Manufacturer</span><input id="form-manufacturer"></label><label><span>Model</span><input id="form-model"></label>
+ <label><span>VIN</span><input id="form-vin"></label><label><span>Battery capacity, kWh</span><input id="form-capacity" type="number" min="20" max="250"></label>
+ <label><span>Connector</span><select id="form-connector"><option>CCS2</option><option>Type 2</option><option>CCS2 + Type 2</option></select></label><label><span>Preferred target SOC</span><input id="form-target" type="number" min="40" max="100"></label>
+ <label><span>Route</span><input id="form-route"></label><label><span>Next departure</span><input id="form-departure" type="time"></label>
+ </div><div class="ui-dialog__footer ops-dialog__footer"><button class="button" value="cancel" type="submit">Cancel</button><button class="button button--primary" id="vehicle-save" value="default" type="submit">Save vehicle</button></div></form></dialog>
+
+<dialog class="ui-dialog ops-dialog vehicle-dialog" id="driver-dialog"><form method="dialog" id="driver-form"><div class="ui-dialog__header ops-dialog__header"><div><h2>Assign driver</h2><p id="driver-dialog-copy">Choose the active driver for this vehicle.</p></div><button class="ui-close" value="cancel" type="submit">×</button></div><div class="ui-dialog__body ops-dialog__body"><div class="driver-choice-list" id="driver-choice-list"></div></div><div class="ui-dialog__footer ops-dialog__footer"><button class="button" value="cancel" type="submit">Cancel</button><button class="button button--primary" value="default" type="submit">Assign driver</button></div></form></dialog>
+<div class="ui-toast ops-toast" id="vehicle-toast" role="status"></div>
+</main></div></div><script type="module" src="./js/pages/vehicles.js?v=14.1"></script></body></html>

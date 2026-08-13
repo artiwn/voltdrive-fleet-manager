@@ -1,0 +1,86 @@
+<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b0b0d"><title>Reservations — VoltDrive Fleet</title>
+<link rel="stylesheet" href="./css/core/reset.css"><link rel="stylesheet" href="./css/core/variables.css"><link rel="stylesheet" href="./css/core/typography.css"><link rel="stylesheet" href="./css/components/buttons.css"><link rel="stylesheet" href="./css/components/forms.css"><link rel="stylesheet" href="./css/components/fleet-ui.css"><link rel="stylesheet" href="./css/layout/app-layout.css"><link rel="stylesheet" href="./css/layout/sidebar.css"><link rel="stylesheet" href="./css/layout/header.css"><link rel="stylesheet" href="./css/pages/fleet.css"><link rel="stylesheet" href="./css/pages/shell-fixes.css"></head><body class="app-page"><div class="app-shell"><aside class="sidebar" id="sidebar"><a class="sidebar__brand" href="./dashboard.html"><span class="sidebar__mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 4.5 13h6L9 22l10.5-13h-6L13 2Z"/></svg></span><span>VoltDrive</span></a><div class="sidebar__caption">Fleet Manager</div><nav class="sidebar__nav" aria-label="Fleet navigation">
+  <div class="sidebar__group"><div class="sidebar__group-title">Overview</div>
+    <a class="nav-link" data-nav="dashboard" href="./dashboard.html"><span class="nav-link__icon">⌂</span><span>Dashboard</span></a>
+    <a class="nav-link" data-nav="operations" href="./operations.html"><span class="nav-link__icon">◉</span><span>Live Operations</span></a>
+  </div>
+  <div class="sidebar__group"><div class="sidebar__group-title">Fleet</div>
+    <a class="nav-link" data-nav="vehicles" href="./vehicles.html"><span class="nav-link__icon">◇</span><span>Vehicles</span></a>
+    <a class="nav-link" data-nav="drivers" href="./drivers.html"><span class="nav-link__icon">◎</span><span>Drivers</span></a>
+    <a class="nav-link" data-nav="schedules" href="./schedules.html"><span class="nav-link__icon">◷</span><span>Schedules</span></a>
+  </div>
+  <div class="sidebar__group"><div class="sidebar__group-title">Charging</div>
+    <a class="nav-link" data-nav="depot" href="./depot.html"><span class="nav-link__icon">ϟ</span><span>Depot & Chargers</span></a>
+    <a class="nav-link" data-nav="sessions" href="./sessions.html"><span class="nav-link__icon">↯</span><span>Charging Sessions</span></a>
+    <a class="nav-link is-active" data-nav="reservations" href="./reservations.html"><span class="nav-link__icon">▣</span><span>Reservations</span></a>
+  </div>
+  <div class="sidebar__group"><div class="sidebar__group-title">Energy & Finance</div>
+    <a class="nav-link" data-nav="energy" href="./energy.html"><span class="nav-link__icon">∿</span><span>Energy</span></a>
+    <a class="nav-link" data-nav="billing" href="./billing.html"><span class="nav-link__icon">¤</span><span>Billing</span></a>
+    <a class="nav-link" data-nav="plan" href="./fleet-plan.html"><span class="nav-link__icon">★</span><span>Fleet Plan</span></a>
+    <a class="nav-link" data-nav="home-charging" href="./home-charging.html"><span class="nav-link__icon">⌂</span><span>Home Charging</span></a>
+  </div>
+  <div class="sidebar__group"><div class="sidebar__group-title">Analytics</div>
+    <a class="nav-link" data-nav="reports" href="./reports.html"><span class="nav-link__icon">▥</span><span>Reports</span></a>
+    <a class="nav-link" data-nav="alerts" href="./alerts.html"><span class="nav-link__icon">!</span><span>Alerts</span><span class="nav-link__badge" id="alert-badge">4</span></a>
+  </div>
+  <div class="sidebar__group"><div class="sidebar__group-title">Administration</div>
+    <a class="nav-link" data-nav="users" href="./users.html"><span class="nav-link__icon">♙</span><span>Users & Permissions</span></a>
+    <a class="nav-link" data-nav="settings" href="./fleet-settings.html"><span class="nav-link__icon">⚙</span><span>Fleet Settings</span></a>
+  </div>
+</nav><div class="sidebar__footer"><div class="sidebar__user"><span class="sidebar__avatar">NP</span><span><strong data-manager-name>Narek Petrosyan</strong><span data-company-name>Ararat Mobility</span></span></div></div></aside><div class="mobile-overlay" id="mobile-overlay"></div><div class="app-main"><header class="app-header"><div class="header__left"><button class="header__menu" id="menu-toggle" type="button">☰</button><div class="header__title"><strong>Reservations</strong><span>Fleet charging reservations and charger assignments</span></div></div><div class="header__right"><span class="role-chip">Fleet Manager</span><div class="header-control"><span>Depot</span><strong data-depot-name>Yerevan Central Depot</strong></div><a class="header-control header-icon" href="./alerts.html" aria-label="Alerts">!<span class="header-icon__dot"></span></a></div></header><main class="page-content">
+<section class="fleet-hero"><div><span class="eyebrow">CHARGING PLANNING</span><h1>Reservations</h1><p>Plan charging capacity before arrival, protect departure readiness and manage charger or bay assignments.</p></div><div class="hero-actions"><button class="button button--primary" id="new-reservation" type="button">New reservation</button></div></section>
+
+<section class="kpi-grid reservation-kpi-grid">
+  <article class="kpi-card"><span>Upcoming</span><strong id="reservation-upcoming">—</strong><small>Confirmed fleet bookings</small></article>
+  <article class="kpi-card"><span>Active now</span><strong id="reservation-active">—</strong><small>Vehicles currently charging</small></article>
+  <article class="kpi-card"><span>Auto assignment</span><strong id="reservation-auto">—</strong><small>Charger assigned on arrival</small></article>
+  <article class="kpi-card"><span>Reserved bays</span><strong id="reservation-bays">—</strong><small>Dedicated parking capacity</small></article>
+  <article class="kpi-card"><span>Reserved energy</span><strong id="reservation-energy">—</strong><small>Planned charging demand</small></article>
+</section>
+
+<section class="panel ui-toolbar reservation-toolbar">
+  <div class="ui-toolbar__group">
+    <div class="ui-tabs" role="tablist" aria-label="Reservation status">
+      <button class="ui-tab is-active" type="button" data-reservation-filter="upcoming">Upcoming</button>
+      <button class="ui-tab" type="button" data-reservation-filter="active">Active</button>
+      <button class="ui-tab" type="button" data-reservation-filter="completed">Completed</button>
+      <button class="ui-tab" type="button" data-reservation-filter="cancelled">Cancelled</button>
+      <button class="ui-tab" type="button" data-reservation-filter="all">All</button>
+    </div>
+    <label class="ui-search reservation-search"><span>⌕</span><input id="reservation-search" type="search" placeholder="Search reservation, vehicle, charger or bay"></label>
+    <select class="ui-select" id="reservation-assignment-filter" aria-label="Assignment filter"><option value="all">All assignments</option><option value="auto">Auto assign</option><option value="charger">Specific charger</option><option value="bay">Specific bay</option></select>
+    <select class="ui-select" id="reservation-sort" aria-label="Sort reservations"><option value="arrival">Arrival time</option><option value="target">Highest target</option><option value="energy">Highest energy need</option><option value="recent">Newest reservation</option></select>
+  </div>
+  <div class="reservation-toolbar__meta"><strong id="reservation-visible-count">0</strong><span>reservations shown</span></div>
+</section>
+
+<section class="panel reservation-table-panel">
+  <header class="panel__header"><div><h2>Fleet reservations</h2><p>Reserve capacity by vehicle, charger or parking bay and inspect arrival policies before dispatch.</p></div><span class="panel-chip">Depot capacity planning</span></header>
+  <div class="table-wrap"><table class="fleet-table reservation-table"><thead><tr><th>Reservation</th><th>Vehicle</th><th>Assignment</th><th>Arrival</th><th>Duration</th><th>Target</th><th>Energy</th><th>Est. cost</th><th>Status</th><th></th></tr></thead><tbody id="reservation-table"></tbody></table></div>
+</section>
+</main></div></div><div class="ui-drawer-backdrop" id="reservation-drawer-backdrop" hidden></div>
+<aside class="ui-drawer reservation-drawer" id="reservation-drawer" aria-hidden="true" aria-labelledby="reservation-drawer-title">
+  <header class="ui-drawer__header"><div><span class="eyebrow">RESERVATION DETAILS</span><h2 id="reservation-drawer-title">Reservation</h2><p id="reservation-drawer-subtitle">—</p></div><button class="ui-close" id="reservation-drawer-close" type="button" aria-label="Close">×</button></header>
+  <div class="ui-drawer__body" id="reservation-drawer-body"></div>
+  <footer class="ui-drawer__footer"><button class="button button--secondary" id="reservation-open-vehicle" type="button">Open vehicle</button><button class="button button--secondary" id="reservation-open-charger" type="button">Open charger</button><button class="button button--secondary" id="reservation-secondary-action" type="button">Modify</button><button class="button button--primary" id="reservation-primary-action" type="button">Cancel reservation</button></footer>
+</aside>
+
+<dialog class="ui-dialog reservation-dialog" id="reservation-dialog">
+  <form method="dialog" id="reservation-form">
+    <header class="ui-dialog__header"><div><h2 id="reservation-dialog-title">New fleet reservation</h2><p id="reservation-dialog-copy">Reserve charging capacity for a vehicle before it arrives at the depot.</p></div><button class="ui-close" value="cancel" type="submit" aria-label="Close">×</button></header>
+    <div class="reservation-stepper" id="reservation-stepper" aria-label="Reservation progress"></div>
+    <div class="ui-dialog__body reservation-dialog__body" id="reservation-dialog-body"></div>
+    <footer class="ui-dialog__footer reservation-dialog__footer"><button class="button button--secondary" id="reservation-back" type="button">Back</button><button class="button button--primary" id="reservation-next" type="button">Continue</button></footer>
+  </form>
+</dialog>
+
+<dialog class="ui-dialog" id="reservation-cancel-dialog">
+  <form method="dialog" id="reservation-cancel-form">
+    <header class="ui-dialog__header"><div><h2>Cancel reservation?</h2><p id="reservation-cancel-copy">Reserved capacity will be released for other fleet vehicles.</p></div><button class="ui-close" value="cancel" type="submit" aria-label="Close">×</button></header>
+    <div class="ui-dialog__body"><div class="ui-callout ui-callout--warning"><strong>Capacity release</strong><span>Any dedicated charger or parking-bay assignment attached to this reservation will be released.</span></div><label class="form-field"><span>Cancellation reason</span><select class="ui-select" id="reservation-cancel-reason"><option>Schedule changed</option><option>Vehicle unavailable</option><option>Charging no longer required</option><option>Fleet manager cancellation</option></select></label></div>
+    <footer class="ui-dialog__footer"><button class="button button--secondary" value="cancel" type="submit">Keep reservation</button><button class="button button--primary" id="confirm-reservation-cancel" value="default" type="submit">Cancel reservation</button></footer>
+  </form>
+</dialog>
+
+<div class="ui-toast" id="reservation-toast" role="status" aria-live="polite"></div><script type="module" src="./js/pages/reservations.js?v=14.1"></script></body></html>

@@ -1,0 +1,54 @@
+<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b0b0d"><title>Fleet Plan — VoltDrive Fleet</title>
+<link rel="stylesheet" href="./css/core/reset.css"><link rel="stylesheet" href="./css/core/variables.css"><link rel="stylesheet" href="./css/core/typography.css"><link rel="stylesheet" href="./css/components/buttons.css"><link rel="stylesheet" href="./css/components/forms.css"><link rel="stylesheet" href="./css/components/fleet-ui.css"><link rel="stylesheet" href="./css/layout/app-layout.css"><link rel="stylesheet" href="./css/layout/sidebar.css"><link rel="stylesheet" href="./css/layout/header.css"><link rel="stylesheet" href="./css/pages/fleet.css"><link rel="stylesheet" href="./css/pages/shell-fixes.css"></head><body class="app-page"><div class="app-shell"><aside class="sidebar" id="sidebar"><a class="sidebar__brand" href="./dashboard.html"><span class="sidebar__mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 4.5 13h6L9 22l10.5-13h-6L13 2Z"/></svg></span><span>VoltDrive</span></a><div class="sidebar__caption">Fleet Manager</div><nav class="sidebar__nav" aria-label="Fleet navigation">
+  <div class="sidebar__group"><div class="sidebar__group-title">Overview</div>
+    <a class="nav-link" data-nav="dashboard" href="./dashboard.html"><span class="nav-link__icon">⌂</span><span>Dashboard</span></a>
+    <a class="nav-link" data-nav="operations" href="./operations.html"><span class="nav-link__icon">◉</span><span>Live Operations</span></a>
+  </div>
+  <div class="sidebar__group"><div class="sidebar__group-title">Fleet</div>
+    <a class="nav-link" data-nav="vehicles" href="./vehicles.html"><span class="nav-link__icon">◇</span><span>Vehicles</span></a>
+    <a class="nav-link" data-nav="drivers" href="./drivers.html"><span class="nav-link__icon">◎</span><span>Drivers</span></a>
+    <a class="nav-link" data-nav="schedules" href="./schedules.html"><span class="nav-link__icon">◷</span><span>Schedules</span></a>
+  </div>
+  <div class="sidebar__group"><div class="sidebar__group-title">Charging</div>
+    <a class="nav-link" data-nav="depot" href="./depot.html"><span class="nav-link__icon">ϟ</span><span>Depot & Chargers</span></a>
+    <a class="nav-link" data-nav="sessions" href="./sessions.html"><span class="nav-link__icon">↯</span><span>Charging Sessions</span></a>
+    <a class="nav-link" data-nav="reservations" href="./reservations.html"><span class="nav-link__icon">▣</span><span>Reservations</span></a>
+  </div>
+  <div class="sidebar__group"><div class="sidebar__group-title">Energy & Finance</div>
+    <a class="nav-link" data-nav="energy" href="./energy.html"><span class="nav-link__icon">∿</span><span>Energy</span></a>
+    <a class="nav-link" data-nav="billing" href="./billing.html"><span class="nav-link__icon">¤</span><span>Billing</span></a>
+    <a class="nav-link is-active" data-nav="plan" href="./fleet-plan.html"><span class="nav-link__icon">★</span><span>Fleet Plan</span></a>
+    <a class="nav-link" data-nav="home-charging" href="./home-charging.html"><span class="nav-link__icon">⌂</span><span>Home Charging</span></a>
+  </div>
+  <div class="sidebar__group"><div class="sidebar__group-title">Analytics</div>
+    <a class="nav-link" data-nav="reports" href="./reports.html"><span class="nav-link__icon">▥</span><span>Reports</span></a>
+    <a class="nav-link" data-nav="alerts" href="./alerts.html"><span class="nav-link__icon">!</span><span>Alerts</span><span class="nav-link__badge" id="alert-badge">4</span></a>
+  </div>
+  <div class="sidebar__group"><div class="sidebar__group-title">Administration</div>
+    <a class="nav-link" data-nav="users" href="./users.html"><span class="nav-link__icon">♙</span><span>Users & Permissions</span></a>
+    <a class="nav-link" data-nav="settings" href="./fleet-settings.html"><span class="nav-link__icon">⚙</span><span>Fleet Settings</span></a>
+  </div>
+</nav><div class="sidebar__footer"><div class="sidebar__user"><span class="sidebar__avatar">NP</span><span><strong data-manager-name>Narek Petrosyan</strong><span data-company-name>Ararat Mobility</span></span></div></div></aside><div class="mobile-overlay" id="mobile-overlay"></div><div class="app-main"><header class="app-header"><div class="header__left"><button class="header__menu" id="menu-toggle" type="button">☰</button><div class="header__title"><strong>Fleet Plan</strong><span>Subscription, included capacity and fleet services</span></div></div><div class="header__right"><span class="role-chip">Fleet Manager</span><div class="header-control"><span>Depot</span><strong data-depot-name>Yerevan Central Depot</strong></div><a class="header-control header-icon" href="./alerts.html" aria-label="Alerts">!<span class="header-icon__dot"></span></a></div></header><main class="page-content fleet-plan-page">
+<section class="fleet-hero"><div><span class="eyebrow">SUBSCRIPTION</span><h1>Fleet plan</h1><p>Manage subscription capacity, enabled services, renewal settings and account limits.</p></div><div class="hero-actions"><a class="button button--secondary" href="./billing.html">Open billing</a><button class="button button--secondary" id="add-capacity" type="button">Add capacity</button><button class="button button--primary" id="manage-plan" type="button">Manage plan</button></div></section>
+
+<section class="plan-hero"><div><span class="ui-pill status-pill status-active">ACTIVE PLAN</span><h2 id="plan-name">—</h2><p id="plan-description">Managed depot charging, fleet optimization and corporate controls.</p><div class="plan-contract-line"><span>Contract <strong id="plan-contract">—</strong></span><span>Next review <strong id="plan-review">—</strong></span></div></div><div class="plan-price"><span>Monthly platform fee</span><strong id="plan-price">—</strong><span>Renews <b id="plan-renewal">—</b></span><label class="plan-renew-switch"><span>Auto-renew</span><input class="switch" id="plan-auto-renew" type="checkbox"></label></div></section>
+
+<section class="plan-usage-grid" id="plan-usage-grid"></section>
+
+<div class="plan-main-grid">
+  <div class="ops-stack">
+    <section class="panel"><header class="panel__header"><div><h2>Plan comparison</h2><p>Compare available VoltDrive Fleet tiers</p></div><span class="panel-chip" id="plan-current-chip">—</span></header><div class="panel__body plan-catalog" id="plan-catalog"></div></section>
+    <section class="panel"><header class="panel__header"><div><h2>Included capabilities</h2><p>Services enabled for this fleet account</p></div></header><div class="panel__body feature-grid" id="plan-features"></div></section>
+  </div>
+  <aside class="ops-stack">
+    <section class="panel"><header class="panel__header"><div><h2>Commercial details</h2><p>Subscription and support configuration</p></div></header><div class="panel__body" id="plan-details"></div></section>
+    <section class="panel"><header class="panel__header"><div><h2>Plan history</h2><p>Recent subscription changes</p></div></header><div class="panel__body plan-history" id="plan-history"></div></section>
+  </aside>
+</div>
+
+<dialog class="ui-dialog plan-dialog" id="manage-plan-dialog"><form method="dialog" id="manage-plan-form"><header class="ui-dialog__header"><div><h2>Manage fleet plan</h2><p>Select the subscription tier that best matches your operating model.</p></div><button class="ui-close" value="cancel" type="submit" aria-label="Close">×</button></header><div class="ui-dialog__body"><div class="plan-dialog-options" id="plan-dialog-options"></div><div class="ui-callout ui-callout--info plan-change-note"><strong>Prototype plan change</strong><span>The selected plan is applied immediately in this prototype and recorded in plan history.</span></div></div><footer class="ui-dialog__footer"><button class="button button--secondary" value="cancel" type="submit">Cancel</button><button class="button button--primary" id="confirm-plan-change" value="default" type="submit">Apply plan</button></footer></form></dialog>
+
+<dialog class="ui-dialog" id="capacity-dialog"><form method="dialog" id="capacity-form"><header class="ui-dialog__header"><div><h2>Add vehicle capacity</h2><p>Increase the number of vehicles included in your current fleet plan.</p></div><button class="ui-close" value="cancel" type="submit" aria-label="Close">×</button></header><div class="ui-dialog__body"><div class="capacity-options" id="capacity-options"></div><div class="plan-capacity-preview" id="capacity-preview"></div></div><footer class="ui-dialog__footer"><button class="button button--secondary" value="cancel" type="submit">Cancel</button><button class="button button--primary" id="confirm-capacity" value="default" type="submit">Add capacity</button></footer></form></dialog>
+
+<div class="ui-toast" id="plan-toast" role="status" aria-live="polite"></div>
+</main></div></div><script type="module" src="./js/pages/fleet-plan.js?v=14.1"></script></body></html>

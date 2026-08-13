@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#101014">
+  <title>Alerts — VoltDrive Fleet</title>
+  <link rel="stylesheet" href="./css/core/reset.css">
+  <link rel="stylesheet" href="./css/core/variables.css">
+  <link rel="stylesheet" href="./css/core/typography.css">
+  <link rel="stylesheet" href="./css/components/buttons.css">
+  <link rel="stylesheet" href="./css/components/forms.css">
+  <link rel="stylesheet" href="./css/components/fleet-ui.css">
+  <link rel="stylesheet" href="./css/layout/app-layout.css">
+  <link rel="stylesheet" href="./css/layout/sidebar.css">
+  <link rel="stylesheet" href="./css/layout/header.css">
+  <link rel="stylesheet" href="./css/pages/fleet.css">
+  <link rel="stylesheet" href="./css/pages/shell-fixes.css">
+</head>
+<body class="app-page">
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar">
+    <a class="sidebar__brand" href="./dashboard.html"><span class="sidebar__mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 4.5 13h6L9 22l10.5-13h-6L13 2Z"/></svg></span><span>VoltDrive</span></a>
+    <div class="sidebar__caption">Fleet Manager</div>
+    <nav class="sidebar__nav" aria-label="Fleet navigation">
+      <div class="sidebar__group"><div class="sidebar__group-title">Overview</div>
+        <a class="nav-link" data-nav="dashboard" href="./dashboard.html"><span class="nav-link__icon">⌂</span><span>Dashboard</span></a>
+        <a class="nav-link" data-nav="operations" href="./operations.html"><span class="nav-link__icon">◉</span><span>Live Operations</span></a>
+      </div>
+      <div class="sidebar__group"><div class="sidebar__group-title">Fleet</div>
+        <a class="nav-link" data-nav="vehicles" href="./vehicles.html"><span class="nav-link__icon">◇</span><span>Vehicles</span></a>
+        <a class="nav-link" data-nav="drivers" href="./drivers.html"><span class="nav-link__icon">◎</span><span>Drivers</span></a>
+        <a class="nav-link" data-nav="schedules" href="./schedules.html"><span class="nav-link__icon">◷</span><span>Schedules</span></a>
+      </div>
+      <div class="sidebar__group"><div class="sidebar__group-title">Charging</div>
+        <a class="nav-link" data-nav="depot" href="./depot.html"><span class="nav-link__icon">ϟ</span><span>Depot & Chargers</span></a>
+        <a class="nav-link" data-nav="sessions" href="./sessions.html"><span class="nav-link__icon">↯</span><span>Charging Sessions</span></a>
+        <a class="nav-link" data-nav="reservations" href="./reservations.html"><span class="nav-link__icon">▣</span><span>Reservations</span></a>
+      </div>
+      <div class="sidebar__group"><div class="sidebar__group-title">Energy & Finance</div>
+        <a class="nav-link" data-nav="energy" href="./energy.html"><span class="nav-link__icon">∿</span><span>Energy</span></a>
+        <a class="nav-link" data-nav="billing" href="./billing.html"><span class="nav-link__icon">¤</span><span>Billing</span></a>
+        <a class="nav-link" data-nav="plan" href="./fleet-plan.html"><span class="nav-link__icon">★</span><span>Fleet Plan</span></a>
+        <a class="nav-link" data-nav="home-charging" href="./home-charging.html"><span class="nav-link__icon">⌂</span><span>Home Charging</span></a>
+      </div>
+      <div class="sidebar__group"><div class="sidebar__group-title">Analytics</div>
+        <a class="nav-link" data-nav="reports" href="./reports.html"><span class="nav-link__icon">▥</span><span>Reports</span></a>
+        <a class="nav-link is-active" data-nav="alerts" href="./alerts.html"><span class="nav-link__icon">!</span><span>Alerts</span><span class="nav-link__badge" id="alert-badge">0</span></a>
+      </div>
+      <div class="sidebar__group"><div class="sidebar__group-title">Administration</div>
+        <a class="nav-link" data-nav="users" href="./users.html"><span class="nav-link__icon">♙</span><span>Users & Permissions</span></a>
+        <a class="nav-link" data-nav="settings" href="./fleet-settings.html"><span class="nav-link__icon">⚙</span><span>Fleet Settings</span></a>
+      </div>
+    </nav>
+    <div class="sidebar__footer"><div class="sidebar__user"><span class="sidebar__avatar">NP</span><span><strong data-manager-name>Narek Petrosyan</strong><span data-company-name>Ararat Mobility</span></span></div></div>
+  </aside>
+
+  <div class="mobile-overlay" id="mobile-overlay"></div>
+  <div class="app-main">
+    <header class="app-header">
+      <div class="header__left"><button class="header__menu" id="menu-toggle" type="button">☰</button><div class="header__title"><strong>Alerts</strong><span>Operational issues, ownership and escalation</span></div></div>
+      <div class="header__right"><span class="role-chip">Fleet Manager</span><div class="header-control"><span>Depot</span><strong data-depot-name>Yerevan Central Depot</strong></div><a class="header-control header-icon" href="./alerts.html" aria-label="Alerts">!<span class="header-icon__dot"></span></a></div>
+    </header>
+
+    <main class="page-content">
+      <section class="fleet-hero"><div><h1>Alert center</h1><p>Assign ownership, escalate risks and resolve operational issues before they affect departures.</p></div><div class="hero-actions"><button class="button button--secondary" id="acknowledge-all" type="button">Acknowledge visible</button><button class="button button--secondary" id="resolve-info" type="button">Resolve informational</button></div></section>
+
+      <section class="alert-summary-grid" aria-label="Alert summary">
+        <button class="alert-summary-card alert-summary-card--critical" data-summary-severity="critical" type="button"><span>Critical</span><strong id="summary-critical">0</strong><small>Immediate attention</small></button>
+        <button class="alert-summary-card alert-summary-card--warning" data-summary-severity="warning" type="button"><span>Warnings</span><strong id="summary-warning">0</strong><small>Operational risk</small></button>
+        <button class="alert-summary-card" data-summary-status="acknowledged" type="button"><span>Acknowledged</span><strong id="summary-acknowledged">0</strong><small>Reviewed, still open</small></button>
+        <button class="alert-summary-card" data-summary-assignee="unassigned" type="button"><span>Unassigned</span><strong id="summary-unassigned">0</strong><small>Needs an owner</small></button>
+      </section>
+
+      <div class="filter-bar alert-filter-bar">
+        <input id="alert-search" placeholder="Search alert, vehicle, charger, session or assignee">
+        <select id="severity-filter"><option value="all">All severities</option><option value="critical">Critical</option><option value="warning">Warning</option><option value="info">Information</option></select>
+        <select id="category-filter"><option value="all">All categories</option><option value="readiness">Readiness</option><option value="charger">Charger</option><option value="energy">Energy</option><option value="queue">Queue</option></select>
+        <select id="alert-status-filter"><option value="active">Active</option><option value="open">Open only</option><option value="acknowledged">Acknowledged</option><option value="resolved">Resolved</option><option value="all">All statuses</option></select>
+        <select id="assignee-filter"><option value="all">All assignees</option><option value="unassigned">Unassigned</option></select>
+      </div>
+
+      <section class="alert-command-strip">
+        <div><span>Operational view</span><strong id="visible-count">0 alerts</strong></div>
+        <div><span>Highest severity</span><strong id="highest-severity">—</strong></div>
+        <div><span>Readiness impact</span><strong id="readiness-impact">0 vehicles</strong></div>
+        <div><span>Escalated</span><strong id="escalated-count">0 alerts</strong></div>
+      </section>
+
+      <div class="alert-list alert-list--operational" id="alert-list"></div>
+    </main>
+  </div>
+</div>
+
+<div class="ui-drawer-backdrop" id="alert-drawer-backdrop" hidden></div>
+<aside class="ui-drawer alert-detail-drawer" id="alert-drawer" aria-hidden="true">
+  <header class="ui-drawer__header"><div><span class="panel__eyebrow" id="alert-drawer-eyebrow">ALERT</span><h2 id="alert-drawer-title">Alert details</h2><p id="alert-drawer-subtitle">Operational issue</p></div><button class="ui-close" id="alert-drawer-close" type="button" aria-label="Close">×</button></header>
+  <div class="ui-drawer__body" id="alert-drawer-body"></div>
+  <footer class="ui-drawer__footer"><button class="button button--secondary" id="alert-open-source" type="button">Open source</button><button class="button button--secondary" id="alert-manage" type="button">Manage</button><button class="button button--secondary" id="alert-acknowledge" type="button">Acknowledge</button><button class="button button--primary" id="alert-resolve" type="button">Resolve</button></footer>
+</aside>
+
+<dialog class="ui-dialog alert-manage-dialog" id="alert-manage-dialog">
+  <form method="dialog" id="alert-manage-form">
+    <header class="ui-dialog__header"><div><h2>Manage alert</h2><p>Set ownership, severity and escalation policy.</p></div><button class="ui-close" value="cancel" type="submit" aria-label="Close">×</button></header>
+    <div class="ui-dialog__body"><div class="ui-form-grid"><label class="form-field"><span>Assignee</span><select id="manage-assignee"></select></label><label class="form-field"><span>Severity</span><select id="manage-severity"><option value="critical">Critical</option><option value="warning">Warning</option><option value="info">Information</option></select></label><label class="form-field"><span>Escalation</span><select id="manage-escalation"><option value="none">No escalation</option><option value="monitor">Monitor · 60 min</option><option value="urgent">Urgent · 30 min</option><option value="immediate">Immediate · 15 min</option></select></label><label class="form-field"><span>Category</span><select id="manage-category"><option value="readiness">Readiness</option><option value="charger">Charger</option><option value="energy">Energy</option><option value="queue">Queue</option></select></label></div></div>
+    <footer class="ui-dialog__footer"><button class="button button--secondary" value="cancel" type="submit">Cancel</button><button class="button button--primary" id="alert-manage-save" value="default" type="submit">Save changes</button></footer>
+  </form>
+</dialog>
+
+<dialog class="ui-dialog alert-resolve-dialog" id="alert-resolve-dialog">
+  <form method="dialog" id="alert-resolve-form">
+    <header class="ui-dialog__header"><div><h2>Resolve alert</h2><p>Record what cleared the issue for the operational audit trail.</p></div><button class="ui-close" value="cancel" type="submit" aria-label="Close">×</button></header>
+    <div class="ui-dialog__body"><label class="form-field"><span>Resolution note</span><textarea id="alert-resolution-note" rows="5" placeholder="Describe the action taken or why this alert can be closed."></textarea></label></div>
+    <footer class="ui-dialog__footer"><button class="button button--secondary" value="cancel" type="submit">Cancel</button><button class="button button--primary" id="alert-resolve-save" value="default" type="submit">Resolve alert</button></footer>
+  </form>
+</dialog>
+
+<div class="ui-toast" id="alert-toast" role="status" aria-live="polite"></div>
+<script type="module" src="./js/pages/alerts.js?v=14.1"></script>
+</body>
+</html>

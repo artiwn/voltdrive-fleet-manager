@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#101014">
+  <link rel="stylesheet" href="./css/core/reset.css">
+  <link rel="stylesheet" href="./css/core/variables.css">
+  <link rel="stylesheet" href="./css/core/typography.css">
+  <link rel="stylesheet" href="./css/components/buttons.css">
+  <link rel="stylesheet" href="./css/components/forms.css">
+  <link rel="stylesheet" href="./css/components/fleet-ui.css">
+  <link rel="stylesheet" href="./css/layout/app-layout.css">
+  <link rel="stylesheet" href="./css/layout/sidebar.css">
+  <link rel="stylesheet" href="./css/layout/header.css">
+  <link rel="stylesheet" href="./css/pages/fleet.css">
+  <link rel="stylesheet" href="./css/pages/shell-fixes.css">
+  <title>Reports — VoltDrive Fleet</title>
+</head>
+<body class="app-page reports-page">
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar">
+    <a class="sidebar__brand" href="./dashboard.html"><span class="sidebar__mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 4.5 13h6L9 22l10.5-13h-6L13 2Z"/></svg></span><span>VoltDrive</span></a>
+    <div class="sidebar__caption">Fleet Manager</div>
+    <nav class="sidebar__nav" aria-label="Fleet navigation">
+      <div class="sidebar__group"><div class="sidebar__group-title">Overview</div>
+        <a class="nav-link" data-nav="dashboard" href="./dashboard.html"><span class="nav-link__icon">⌂</span><span>Dashboard</span></a>
+        <a class="nav-link" data-nav="operations" href="./operations.html"><span class="nav-link__icon">◉</span><span>Live Operations</span></a>
+      </div>
+      <div class="sidebar__group"><div class="sidebar__group-title">Fleet</div>
+        <a class="nav-link" data-nav="vehicles" href="./vehicles.html"><span class="nav-link__icon">◇</span><span>Vehicles</span></a>
+        <a class="nav-link" data-nav="drivers" href="./drivers.html"><span class="nav-link__icon">◎</span><span>Drivers</span></a>
+        <a class="nav-link" data-nav="schedules" href="./schedules.html"><span class="nav-link__icon">◷</span><span>Schedules</span></a>
+      </div>
+      <div class="sidebar__group"><div class="sidebar__group-title">Charging</div>
+        <a class="nav-link" data-nav="depot" href="./depot.html"><span class="nav-link__icon">ϟ</span><span>Depot & Chargers</span></a>
+        <a class="nav-link" data-nav="sessions" href="./sessions.html"><span class="nav-link__icon">↯</span><span>Charging Sessions</span></a>
+        <a class="nav-link" data-nav="reservations" href="./reservations.html"><span class="nav-link__icon">▣</span><span>Reservations</span></a>
+      </div>
+      <div class="sidebar__group"><div class="sidebar__group-title">Energy & Finance</div>
+        <a class="nav-link" data-nav="energy" href="./energy.html"><span class="nav-link__icon">∿</span><span>Energy</span></a>
+        <a class="nav-link" data-nav="billing" href="./billing.html"><span class="nav-link__icon">¤</span><span>Billing</span></a>
+        <a class="nav-link" data-nav="plan" href="./fleet-plan.html"><span class="nav-link__icon">★</span><span>Fleet Plan</span></a>
+        <a class="nav-link" data-nav="home-charging" href="./home-charging.html"><span class="nav-link__icon">⌂</span><span>Home Charging</span></a>
+      </div>
+      <div class="sidebar__group"><div class="sidebar__group-title">Analytics</div>
+        <a class="nav-link is-active" data-nav="reports" href="./reports.html"><span class="nav-link__icon">▥</span><span>Reports</span></a>
+        <a class="nav-link" data-nav="alerts" href="./alerts.html"><span class="nav-link__icon">!</span><span>Alerts</span><span class="nav-link__badge" id="alert-badge">4</span></a>
+      </div>
+      <div class="sidebar__group"><div class="sidebar__group-title">Administration</div>
+    <a class="nav-link" data-nav="users" href="./users.html"><span class="nav-link__icon">♙</span><span>Users & Permissions</span></a>
+    <a class="nav-link" data-nav="settings" href="./fleet-settings.html"><span class="nav-link__icon">⚙</span><span>Fleet Settings</span></a>
+  </div>
+    </nav>
+    <div class="sidebar__footer"><div class="sidebar__user"><span class="sidebar__avatar">NP</span><span><strong data-manager-name></strong><span data-company-name></span></span></div></div>
+  </aside>
+  <div class="mobile-overlay" id="mobile-overlay"></div>
+  <div class="app-main">
+    <header class="app-header"><div class="header__left"><button class="header__menu" id="menu-toggle" type="button">☰</button><div class="header__title"><strong>Reports & Analytics</strong><span>Fleet efficiency, charging economics and readiness performance</span></div></div><div class="header__right"><div class="header-control"><span>Depot</span><strong data-depot-name></strong></div></div></header>
+    <main class="page-content">
+      <section class="fleet-hero fleet-hero--reports">
+        <div><span class="eyebrow">ANALYTICS CENTER</span><h1>Fleet performance</h1><p>Operational, energy and financial analytics across the fleet.</p></div>
+        <div class="hero-actions"><button class="button button--secondary" id="report-reset" type="button">Reset filters</button><button class="button button--primary" id="report-export" type="button">Export CSV</button></div>
+      </section>
+
+      <section class="panel reports-filter-panel">
+        <div class="panel__body">
+          <div class="reports-filter-grid">
+            <label class="form-field"><span>Reporting period</span><select class="ui-select" id="report-period"><option value="day">Today</option><option value="week" selected>Last 7 days</option><option value="month">Last 30 days</option><option value="quarter">Last 90 days</option></select></label>
+            <label class="form-field"><span>Department</span><select class="ui-select" id="report-department"><option value="all">All departments</option></select></label>
+            <label class="form-field"><span>Vehicle</span><select class="ui-select" id="report-vehicle"><option value="all">All vehicles</option></select></label>
+            <label class="form-field"><span>Driver</span><select class="ui-select" id="report-driver"><option value="all">All drivers</option></select></label>
+            <label class="form-field"><span>Charger</span><select class="ui-select" id="report-charger"><option value="all">All chargers</option></select></label>
+          </div>
+          <div class="reports-filter-meta"><span class="ui-pill status-pill status-active">Live prototype data</span><span id="report-filter-summary">All fleet data · Last 7 days</span></div>
+        </div>
+      </section>
+
+      <section class="kpi-grid reports-kpi-grid">
+        <article class="kpi-card"><span>Energy delivered</span><strong id="report-energy">—</strong><small id="report-energy-note">Charging sessions</small></article>
+        <article class="kpi-card"><span>Total charging cost</span><strong id="report-cost">—</strong><small id="report-cost-note">Fleet + home charging</small></article>
+        <article class="kpi-card"><span>Cost / kWh</span><strong id="report-cost-kwh">—</strong><small>Effective fleet rate</small></article>
+        <article class="kpi-card"><span>Readiness SLA</span><strong id="report-readiness">—</strong><small id="report-readiness-note">Departures meeting target</small></article>
+        <article class="kpi-card"><span>Charger utilization</span><strong id="report-utilization">—</strong><small>Operational utilization</small></article>
+        <article class="kpi-card"><span>Failed sessions</span><strong id="report-failure-rate">—</strong><small id="report-failure-note">Session failure rate</small></article>
+      </section>
+
+      <section class="reports-command-grid">
+        <section class="panel report-trend-panel">
+          <header class="panel__header"><div><h2>Energy & cost trend</h2><p>Selected reporting window</p></div><div class="ui-tabs" id="trend-tabs"><button class="ui-tab is-active" type="button" data-trend="energy">Energy</button><button class="ui-tab" type="button" data-trend="cost">Cost</button></div></header>
+          <div class="panel__body"><div class="report-trend-summary"><div><span id="trend-total-label">Total energy</span><strong id="trend-total">—</strong></div><div><span>Peak point</span><strong id="trend-peak">—</strong></div><div><span>Average</span><strong id="trend-average">—</strong></div></div><div class="report-trend-chart" id="report-trend-chart"></div></div>
+        </section>
+
+        <section class="panel">
+          <header class="panel__header"><div><h2>Readiness & departures</h2><p>Current schedule performance</p></div></header>
+          <div class="panel__body"><div class="report-readiness-card"><div class="report-readiness-ring" id="report-readiness-ring"><div><strong id="report-readiness-ring-value">—</strong><span>SLA</span></div></div><div class="report-readiness-breakdown" id="report-readiness-breakdown"></div></div><div class="ui-callout ui-callout--warning" id="report-risk-callout"><strong>Departure attention</strong><span id="report-risk-text">—</span></div></div>
+        </section>
+      </section>
+
+      <section class="reports-two-column">
+        <section class="panel"><header class="panel__header"><div><h2>Cost by department</h2><p>Charging and home reimbursement allocation</p></div></header><div class="panel__body"><div class="metric-bars reports-metric-bars" id="department-cost-bars"></div></div></section>
+        <section class="panel"><header class="panel__header"><div><h2>Fleet status mix</h2><p>Current vehicle operational state</p></div></header><div class="panel__body"><div class="report-status-grid report-status-grid--v2" id="report-status-grid"></div></div></section>
+      </section>
+
+      <section class="panel reports-section">
+        <header class="panel__header"><div><h2>Vehicle performance</h2><p>Energy, charging cost and readiness by vehicle</p></div><span class="panel__meta" id="vehicle-report-count">—</span></header>
+        <div class="panel__body"><div class="fleet-table-wrap"><table class="fleet-table reports-vehicle-table"><thead><tr><th>Vehicle</th><th>Driver / Department</th><th>Sessions</th><th>Energy</th><th>Cost</th><th>SOC</th><th>Readiness</th><th>Status</th><th></th></tr></thead><tbody id="report-vehicle-rows"></tbody></table></div></div>
+      </section>
+
+      <section class="reports-two-column reports-section">
+        <section class="panel"><header class="panel__header"><div><h2>Charger performance</h2><p>Utilization, energy and hardware health</p></div></header><div class="panel__body"><div class="fleet-table-wrap"><table class="fleet-table reports-charger-table"><thead><tr><th>Charger</th><th>Status</th><th>Sessions</th><th>Energy</th><th>Utilization</th><th>Health</th><th></th></tr></thead><tbody id="report-charger-rows"></tbody></table></div></div></section>
+        <section class="panel"><header class="panel__header"><div><h2>Home charging</h2><p>Employee reimbursement performance</p></div></header><div class="panel__body"><div class="report-home-summary" id="report-home-summary"></div><div class="report-home-list" id="report-home-list"></div></div></section>
+      </section>
+
+      <section class="panel reports-section">
+        <header class="panel__header"><div><h2>Departure performance</h2><p>Scheduled departures, required SOC and readiness risks</p></div><button class="action-button" id="open-schedules" type="button">Open schedules</button></header>
+        <div class="panel__body"><div class="fleet-table-wrap"><table class="fleet-table"><thead><tr><th>Schedule</th><th>Vehicle</th><th>Driver</th><th>Route</th><th>Departure</th><th>Required SOC</th><th>Current SOC</th><th>Result</th></tr></thead><tbody id="report-schedule-rows"></tbody></table></div></div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<div class="ui-drawer-backdrop" id="report-drawer-backdrop" hidden></div>
+<aside class="ui-drawer report-entity-drawer" id="report-drawer" aria-hidden="true">
+  <header class="ui-drawer__header"><div><span class="panel-kicker" id="report-drawer-kicker">Vehicle analytics</span><h2 id="report-drawer-title">—</h2><p id="report-drawer-subtitle">—</p></div><button class="ui-close" id="report-drawer-close" type="button" aria-label="Close">×</button></header>
+  <div class="ui-drawer__body" id="report-drawer-body"></div>
+  <footer class="ui-drawer__footer"><button class="button button--secondary" id="report-drawer-secondary" type="button">Open sessions</button><button class="button button--primary" id="report-drawer-primary" type="button">Open vehicle</button></footer>
+</aside>
+
+<div class="ui-toast" id="report-toast" role="status" aria-live="polite"></div>
+<script type="module" src="./js/pages/reports.js?v=14.1"></script>
+</body>
+</html>

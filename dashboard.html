@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0b0b0d">
+  <title>Dashboard — VoltDrive Fleet</title>
+  <link rel="stylesheet" href="./css/core/reset.css">
+  <link rel="stylesheet" href="./css/core/variables.css">
+  <link rel="stylesheet" href="./css/core/typography.css">
+  <link rel="stylesheet" href="./css/components/buttons.css">
+  <link rel="stylesheet" href="./css/components/forms.css"><link rel="stylesheet" href="./css/components/fleet-ui.css">
+  <link rel="stylesheet" href="./css/layout/app-layout.css">
+  <link rel="stylesheet" href="./css/layout/sidebar.css">
+  <link rel="stylesheet" href="./css/layout/header.css">
+  <link rel="stylesheet" href="./css/pages/fleet.css">
+  <link rel="stylesheet" href="./css/pages/shell-fixes.css">
+</head>
+<body class="app-page">
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar">
+    <a class="sidebar__brand" href="./dashboard.html"><span class="sidebar__mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 4.5 13h6L9 22l10.5-13h-6L13 2Z"/></svg></span><span>VoltDrive</span></a>
+    <div class="sidebar__caption">Fleet Manager</div>
+    <nav class="sidebar__nav" aria-label="Fleet navigation">
+  <div class="sidebar__group"><div class="sidebar__group-title">Overview</div>
+    <a class="nav-link is-active" data-nav="dashboard" href="./dashboard.html"><span class="nav-link__icon">⌂</span><span>Dashboard</span></a>
+    <a class="nav-link" data-nav="operations" href="./operations.html"><span class="nav-link__icon">◉</span><span>Live Operations</span></a>
+  </div>
+  <div class="sidebar__group"><div class="sidebar__group-title">Fleet</div>
+    <a class="nav-link" data-nav="vehicles" href="./vehicles.html"><span class="nav-link__icon">◇</span><span>Vehicles</span></a>
+    <a class="nav-link" data-nav="drivers" href="./drivers.html"><span class="nav-link__icon">◎</span><span>Drivers</span></a>
+    <a class="nav-link" data-nav="schedules" href="./schedules.html"><span class="nav-link__icon">◷</span><span>Schedules</span></a>
+  </div>
+  <div class="sidebar__group"><div class="sidebar__group-title">Charging</div>
+    <a class="nav-link" data-nav="depot" href="./depot.html"><span class="nav-link__icon">ϟ</span><span>Depot & Chargers</span></a>
+    <a class="nav-link" data-nav="sessions" href="./sessions.html"><span class="nav-link__icon">↯</span><span>Charging Sessions</span></a>
+    <a class="nav-link" data-nav="reservations" href="./reservations.html"><span class="nav-link__icon">▣</span><span>Reservations</span></a>
+  </div>
+  <div class="sidebar__group"><div class="sidebar__group-title">Energy & Finance</div>
+    <a class="nav-link" data-nav="energy" href="./energy.html"><span class="nav-link__icon">∿</span><span>Energy</span></a>
+    <a class="nav-link" data-nav="billing" href="./billing.html"><span class="nav-link__icon">¤</span><span>Billing</span></a>
+    <a class="nav-link" data-nav="plan" href="./fleet-plan.html"><span class="nav-link__icon">★</span><span>Fleet Plan</span></a>
+    <a class="nav-link" data-nav="home-charging" href="./home-charging.html"><span class="nav-link__icon">⌂</span><span>Home Charging</span></a>
+  </div>
+  <div class="sidebar__group"><div class="sidebar__group-title">Analytics</div>
+    <a class="nav-link" data-nav="reports" href="./reports.html"><span class="nav-link__icon">▥</span><span>Reports</span></a>
+    <a class="nav-link" data-nav="alerts" href="./alerts.html"><span class="nav-link__icon">!</span><span>Alerts</span><span class="nav-link__badge" id="alert-badge">4</span></a>
+  </div>
+  <div class="sidebar__group"><div class="sidebar__group-title">Administration</div>
+    <a class="nav-link" data-nav="users" href="./users.html"><span class="nav-link__icon">♙</span><span>Users & Permissions</span></a>
+    <a class="nav-link" data-nav="settings" href="./fleet-settings.html"><span class="nav-link__icon">⚙</span><span>Fleet Settings</span></a>
+  </div>
+</nav>
+    <div class="sidebar__footer"><div class="sidebar__user"><span class="sidebar__avatar">NP</span><span><strong data-manager-name>Narek Petrosyan</strong><span data-company-name>Ararat Mobility</span></span></div></div>
+  </aside>
+  <div class="mobile-overlay" id="mobile-overlay"></div>
+  <div class="app-main">
+    <header class="app-header">
+      <div class="header__left"><button class="header__menu" id="menu-toggle" type="button">☰</button><div class="header__title"><strong>Dashboard</strong><span>Fleet readiness and charging status</span></div></div>
+      <div class="header__right"><span class="role-chip">Fleet Manager</span><div class="header-control"><span>Depot</span><strong data-depot-name>Yerevan Central Depot</strong></div><a class="header-control header-icon" href="./alerts.html" aria-label="Alerts">!<span class="header-icon__dot"></span></a></div>
+    </header>
+
+    <main class="page-content">
+      <section class="fleet-hero fleet-hero--dashboard">
+        <div><span class="eyebrow">LIVE FLEET OPERATIONS</span><h1>Fleet readiness overview</h1><p>Prioritize departures, keep vehicles ready and stay inside the depot power envelope.</p></div>
+        <div class="hero-actions"><a class="button button--secondary" href="./depot.html">Manage depot</a><a class="button button--primary" href="./vehicles.html">View vehicles</a></div>
+      </section>
+
+      <section class="operations-strip" aria-label="Operational status">
+        <div><span class="ops-dot ops-dot--green"></span><strong>Depot online</strong><small>8 chargers monitored</small></div>
+        <div><span>Smart priority</span><strong id="smart-priority-state">Enabled</strong></div>
+        <div><span>Peak protection</span><strong id="peak-protection-state">Enabled</strong></div>
+        <div><span>Open alerts</span><strong id="open-alerts">4</strong></div>
+      </section>
+
+      <section class="kpi-grid kpi-grid--dashboard" id="kpis"></section>
+
+      <section class="dashboard-command-grid">
+        <article class="panel readiness-score-card">
+          <div class="readiness-score-card__head"><div><span class="panel-kicker">Readiness score</span><h2>Departure confidence</h2></div><span class="ui-pill status-pill status-ready">Live</span></div>
+          <div class="readiness-score-layout"><div class="score-ring" id="score-ring"><div><strong id="readiness-score">0%</strong><span>fleet ready</span></div></div><div class="readiness-breakdown" id="readiness-breakdown"></div></div>
+        </article>
+
+        <article class="panel next-departures-card">
+          <header class="panel__header"><div><h2>Next departures</h2><p>Highest priority vehicles in the current schedule</p></div><a href="./vehicles.html">Open schedule →</a></header>
+          <div class="next-departures" id="next-departures"></div>
+        </article>
+
+        <article class="panel energy-summary-card">
+          <header class="panel__header"><div><h2>Energy snapshot</h2><p>Current depot capacity and cost</p></div><a href="./depot.html">Energy controls →</a></header>
+          <div class="energy-snapshot" id="energy-snapshot"></div>
+        </article>
+      </section>
+
+      <div class="fleet-grid fleet-grid--dashboard">
+        <div>
+          <section class="panel">
+            <header class="panel__header"><div><h2>Departure readiness</h2><p>Vehicles requiring fleet-manager attention first</p></div><a href="./vehicles.html">View all →</a></header>
+            <div class="table-wrap"><table class="fleet-table"><thead><tr><th>Vehicle</th><th>Departure</th><th>Battery</th><th>Required energy</th><th>Status</th><th>Charger</th><th>Priority</th></tr></thead><tbody id="readiness-table"></tbody></table></div>
+          </section>
+
+          <section class="panel dashboard-spacer">
+            <header class="panel__header"><div><h2>Charging assignments</h2><p>Current charger-to-vehicle allocation and power draw</p></div><a href="./depot.html">Open depot →</a></header>
+            <div class="table-wrap"><table class="fleet-table"><thead><tr><th>Charger</th><th>Vehicle</th><th>Power</th><th>Bay</th><th>Health</th><th>Status</th></tr></thead><tbody id="assignment-table"></tbody></table></div>
+          </section>
+        </div>
+
+        <aside>
+          <section class="panel load-card load-card--enhanced">
+            <div class="load-value"><div><span>Depot load</span><strong id="load-value">428 kW</strong></div><span id="load-percent">71%</span></div>
+            <div class="progress"><span id="load-bar" style="width:71%"></span></div>
+            <div class="load-scale"><span>0 kW</span><span id="capacity-label">600 kW capacity</span></div>
+            <div class="metric-list"><div class="metric-row"><span>Available headroom</span><strong id="headroom">172 kW</strong></div><div class="metric-row"><span>Energy price</span><strong id="price">78 AMD/kWh</strong></div><div class="metric-row"><span>Solar contribution</span><strong id="solar">64 kW</strong></div><div class="metric-row"><span>Site battery</span><strong id="site-battery">72%</strong></div></div>
+          </section>
+
+          <section class="panel dashboard-spacer">
+            <header class="panel__header"><div><h2>Power allocation</h2><p>Active vehicles by charging draw</p></div></header>
+            <div class="panel__body allocation-list" id="power-allocation"></div>
+          </section>
+
+          <section class="panel dashboard-spacer">
+            <header class="panel__header"><div><h2>Operational alerts</h2><p>Items needing fleet-manager attention</p></div><a href="./alerts.html">View all →</a></header>
+            <div class="panel__body alert-list" id="dashboard-alerts"></div>
+          </section>
+
+          <section class="panel dashboard-spacer">
+            <header class="panel__header"><div><h2>Fleet account</h2><p>Subscription and current billing period</p></div><a href="./billing.html">Billing →</a></header>
+            <div class="panel__body">
+              <div class="metric-row"><span>Plan</span><strong>Fleet Business</strong></div>
+              <div class="metric-row"><span>Vehicle capacity</span><strong>48 / 75</strong></div>
+              <div class="metric-row"><span>Current period</span><strong>395,150 AMD</strong></div>
+              <div class="metric-row"><span>Next payment</span><strong>Sep 1</strong></div>
+              <div class="hero-actions" style="margin-top:14px"><a class="button button--secondary" href="./fleet-plan.html">Manage plan</a><a class="button button--secondary" href="./billing.html">View billing</a></div>
+            </div>
+          </section>
+        </aside>
+      </div>
+    </main>
+  </div>
+</div>
+<script type="module" src="./js/pages/dashboard.js?v=14.1"></script>
+</body>
+</html>

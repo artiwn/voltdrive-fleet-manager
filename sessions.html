@@ -1,0 +1,77 @@
+<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b0b0d"><title>Charging Sessions — VoltDrive Fleet</title>
+<link rel="stylesheet" href="./css/core/reset.css"><link rel="stylesheet" href="./css/core/variables.css"><link rel="stylesheet" href="./css/core/typography.css"><link rel="stylesheet" href="./css/components/buttons.css"><link rel="stylesheet" href="./css/components/forms.css"><link rel="stylesheet" href="./css/components/fleet-ui.css"><link rel="stylesheet" href="./css/layout/app-layout.css"><link rel="stylesheet" href="./css/layout/sidebar.css"><link rel="stylesheet" href="./css/layout/header.css"><link rel="stylesheet" href="./css/pages/fleet.css"><link rel="stylesheet" href="./css/pages/shell-fixes.css"></head><body class="app-page"><div class="app-shell"><aside class="sidebar" id="sidebar"><a class="sidebar__brand" href="./dashboard.html"><span class="sidebar__mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 4.5 13h6L9 22l10.5-13h-6L13 2Z"/></svg></span><span>VoltDrive</span></a><div class="sidebar__caption">Fleet Manager</div><nav class="sidebar__nav" aria-label="Fleet navigation">
+  <div class="sidebar__group"><div class="sidebar__group-title">Overview</div>
+    <a class="nav-link" data-nav="dashboard" href="./dashboard.html"><span class="nav-link__icon">⌂</span><span>Dashboard</span></a>
+    <a class="nav-link" data-nav="operations" href="./operations.html"><span class="nav-link__icon">◉</span><span>Live Operations</span></a>
+  </div>
+  <div class="sidebar__group"><div class="sidebar__group-title">Fleet</div>
+    <a class="nav-link" data-nav="vehicles" href="./vehicles.html"><span class="nav-link__icon">◇</span><span>Vehicles</span></a>
+    <a class="nav-link" data-nav="drivers" href="./drivers.html"><span class="nav-link__icon">◎</span><span>Drivers</span></a>
+    <a class="nav-link" data-nav="schedules" href="./schedules.html"><span class="nav-link__icon">◷</span><span>Schedules</span></a>
+  </div>
+  <div class="sidebar__group"><div class="sidebar__group-title">Charging</div>
+    <a class="nav-link" data-nav="depot" href="./depot.html"><span class="nav-link__icon">ϟ</span><span>Depot & Chargers</span></a>
+    <a class="nav-link is-active" data-nav="sessions" href="./sessions.html"><span class="nav-link__icon">↯</span><span>Charging Sessions</span></a>
+    <a class="nav-link" data-nav="reservations" href="./reservations.html"><span class="nav-link__icon">▣</span><span>Reservations</span></a>
+  </div>
+  <div class="sidebar__group"><div class="sidebar__group-title">Energy & Finance</div>
+    <a class="nav-link" data-nav="energy" href="./energy.html"><span class="nav-link__icon">∿</span><span>Energy</span></a>
+    <a class="nav-link" data-nav="billing" href="./billing.html"><span class="nav-link__icon">¤</span><span>Billing</span></a>
+    <a class="nav-link" data-nav="plan" href="./fleet-plan.html"><span class="nav-link__icon">★</span><span>Fleet Plan</span></a>
+    <a class="nav-link" data-nav="home-charging" href="./home-charging.html"><span class="nav-link__icon">⌂</span><span>Home Charging</span></a>
+  </div>
+  <div class="sidebar__group"><div class="sidebar__group-title">Analytics</div>
+    <a class="nav-link" data-nav="reports" href="./reports.html"><span class="nav-link__icon">▥</span><span>Reports</span></a>
+    <a class="nav-link" data-nav="alerts" href="./alerts.html"><span class="nav-link__icon">!</span><span>Alerts</span><span class="nav-link__badge" id="alert-badge">4</span></a>
+  </div>
+  <div class="sidebar__group"><div class="sidebar__group-title">Administration</div>
+    <a class="nav-link" data-nav="users" href="./users.html"><span class="nav-link__icon">♙</span><span>Users & Permissions</span></a>
+    <a class="nav-link" data-nav="settings" href="./fleet-settings.html"><span class="nav-link__icon">⚙</span><span>Fleet Settings</span></a>
+  </div>
+</nav><div class="sidebar__footer"><div class="sidebar__user"><span class="sidebar__avatar">NP</span><span><strong data-manager-name>Narek Petrosyan</strong><span data-company-name>Ararat Mobility</span></span></div></div></aside><div class="mobile-overlay" id="mobile-overlay"></div><div class="app-main"><header class="app-header"><div class="header__left"><button class="header__menu" id="menu-toggle" type="button">☰</button><div class="header__title"><strong>Charging Sessions</strong><span>Active, completed and failed charging sessions</span></div></div><div class="header__right"><span class="role-chip">Fleet Manager</span><div class="header-control"><span>Depot</span><strong data-depot-name>Yerevan Central Depot</strong></div><a class="header-control header-icon" href="./alerts.html" aria-label="Alerts">!<span class="header-icon__dot"></span></a></div></header><main class="page-content">
+<section class="fleet-hero"><div><span class="eyebrow">CHARGING OPERATIONS</span><h1>Charging sessions</h1><p>Monitor live charging, battery progress, energy delivery, session cost and failures across the fleet.</p></div><div class="hero-actions"><a class="button button--secondary" href="./depot.html">Depot chargers</a><a class="button button--secondary" href="./energy.html">Energy overview</a></div></section>
+
+<section class="kpi-grid session-kpi-grid" id="session-summary">
+  <article class="kpi-card"><span>Active now</span><strong id="session-active">—</strong><small>Live charging sessions</small></article>
+  <article class="kpi-card"><span>Completed</span><strong id="session-completed">—</strong><small>Current demo period</small></article>
+  <article class="kpi-card"><span>Failed</span><strong id="session-failed">—</strong><small>Needs review</small></article>
+  <article class="kpi-card"><span>Energy delivered</span><strong id="session-energy">—</strong><small>Across shown sessions</small></article>
+  <article class="kpi-card"><span>Session cost</span><strong id="session-cost">—</strong><small>Fleet charging spend</small></article>
+</section>
+
+<section class="panel ui-toolbar session-toolbar">
+  <div class="ui-toolbar__group">
+    <div class="ui-tabs" role="tablist" aria-label="Session status">
+      <button class="ui-tab is-active" type="button" data-session-filter="all">All</button>
+      <button class="ui-tab" type="button" data-session-filter="active">Active</button>
+      <button class="ui-tab" type="button" data-session-filter="completed">Completed</button>
+      <button class="ui-tab" type="button" data-session-filter="failed">Failed</button>
+    </div>
+    <label class="ui-search session-search"><span>⌕</span><input id="session-search" type="search" placeholder="Search session, vehicle, driver or charger"></label>
+    <select class="ui-select" id="session-sort" aria-label="Sort sessions"><option value="recent">Most recent</option><option value="energy">Highest energy</option><option value="cost">Highest cost</option><option value="power">Highest power</option></select>
+  </div>
+  <div class="session-toolbar__meta"><span class="ops-live-dot"></span><strong id="session-visible-count">0</strong><span>sessions shown</span></div>
+</section>
+
+<section class="panel session-table-panel">
+  <div class="panel__header"><div><h2>Session activity</h2><p>Open any session to inspect battery, power, finance and event history.</p></div><span class="panel-chip" id="session-live-chip">Live monitoring</span></div>
+  <div class="table-wrap"><table class="fleet-table session-table"><thead><tr><th>Session</th><th>Vehicle / Driver</th><th>Charger</th><th>Battery</th><th>Energy</th><th>Power</th><th>Cost</th><th>Status</th><th></th></tr></thead><tbody id="session-table"></tbody></table></div>
+</section>
+</main>
+
+<div class="ui-drawer-backdrop" id="session-drawer-backdrop" hidden></div>
+<aside class="ui-drawer session-drawer" id="session-drawer" aria-hidden="true" aria-labelledby="session-drawer-title">
+  <header class="ui-drawer__header"><div><span class="eyebrow">SESSION DETAILS</span><h2 id="session-drawer-title">Charging session</h2><p id="session-drawer-subtitle">—</p></div><button class="ui-close" id="session-drawer-close" type="button" aria-label="Close">×</button></header>
+  <div class="ui-drawer__body" id="session-drawer-body"></div>
+  <footer class="ui-drawer__footer"><button class="button button--secondary" id="session-open-vehicle" type="button">Open vehicle</button><button class="button button--secondary" id="session-open-charger" type="button">Open charger</button><button class="button button--primary" id="session-primary-action" type="button">Stop session</button></footer>
+</aside>
+
+<dialog class="ui-dialog session-stop-dialog" id="session-stop-dialog">
+  <form method="dialog" id="session-stop-form">
+    <header class="ui-dialog__header"><div><h2>Stop charging session?</h2><p id="session-stop-copy">The charger will stop delivering energy and the session will be finalized.</p></div><button class="ui-close" value="cancel" type="submit" aria-label="Close">×</button></header>
+    <div class="ui-dialog__body"><div class="ui-callout ui-callout--warning"><strong>Fleet manager action</strong><span>Stopping before the target SOC may leave the vehicle below its required departure charge.</span></div><label class="form-field"><span>Stop reason</span><select class="ui-select" id="session-stop-reason"><option value="Stopped by Fleet Manager">Stopped by Fleet Manager</option><option value="Vehicle required for departure">Vehicle required for departure</option><option value="Charging issue reported">Charging issue reported</option><option value="Manual load-management action">Manual load-management action</option></select></label></div>
+    <footer class="ui-dialog__footer"><button class="button button--secondary" value="cancel" type="submit">Keep charging</button><button class="button button--primary" id="confirm-session-stop" value="default" type="submit">Stop session</button></footer>
+  </form>
+</dialog>
+
+<div class="ui-toast" id="session-toast" role="status" aria-live="polite"></div><script type="module" src="./js/pages/sessions.js?v=14.1"></script></body></html>

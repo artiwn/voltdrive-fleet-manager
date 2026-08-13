@@ -1,0 +1,75 @@
+<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b0b0d"><title>Billing — VoltDrive Fleet</title>
+<link rel="stylesheet" href="./css/core/reset.css"><link rel="stylesheet" href="./css/core/variables.css"><link rel="stylesheet" href="./css/core/typography.css"><link rel="stylesheet" href="./css/components/buttons.css"><link rel="stylesheet" href="./css/components/forms.css"><link rel="stylesheet" href="./css/components/fleet-ui.css"><link rel="stylesheet" href="./css/layout/app-layout.css"><link rel="stylesheet" href="./css/layout/sidebar.css"><link rel="stylesheet" href="./css/layout/header.css"><link rel="stylesheet" href="./css/pages/fleet.css"><link rel="stylesheet" href="./css/pages/shell-fixes.css"></head><body class="app-page"><div class="app-shell"><aside class="sidebar" id="sidebar"><a class="sidebar__brand" href="./dashboard.html"><span class="sidebar__mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 4.5 13h6L9 22l10.5-13h-6L13 2Z"/></svg></span><span>VoltDrive</span></a><div class="sidebar__caption">Fleet Manager</div><nav class="sidebar__nav" aria-label="Fleet navigation">
+  <div class="sidebar__group"><div class="sidebar__group-title">Overview</div>
+    <a class="nav-link" data-nav="dashboard" href="./dashboard.html"><span class="nav-link__icon">⌂</span><span>Dashboard</span></a>
+    <a class="nav-link" data-nav="operations" href="./operations.html"><span class="nav-link__icon">◉</span><span>Live Operations</span></a>
+  </div>
+  <div class="sidebar__group"><div class="sidebar__group-title">Fleet</div>
+    <a class="nav-link" data-nav="vehicles" href="./vehicles.html"><span class="nav-link__icon">◇</span><span>Vehicles</span></a>
+    <a class="nav-link" data-nav="drivers" href="./drivers.html"><span class="nav-link__icon">◎</span><span>Drivers</span></a>
+    <a class="nav-link" data-nav="schedules" href="./schedules.html"><span class="nav-link__icon">◷</span><span>Schedules</span></a>
+  </div>
+  <div class="sidebar__group"><div class="sidebar__group-title">Charging</div>
+    <a class="nav-link" data-nav="depot" href="./depot.html"><span class="nav-link__icon">ϟ</span><span>Depot & Chargers</span></a>
+    <a class="nav-link" data-nav="sessions" href="./sessions.html"><span class="nav-link__icon">↯</span><span>Charging Sessions</span></a>
+    <a class="nav-link" data-nav="reservations" href="./reservations.html"><span class="nav-link__icon">▣</span><span>Reservations</span></a>
+  </div>
+  <div class="sidebar__group"><div class="sidebar__group-title">Energy & Finance</div>
+    <a class="nav-link" data-nav="energy" href="./energy.html"><span class="nav-link__icon">∿</span><span>Energy</span></a>
+    <a class="nav-link is-active" data-nav="billing" href="./billing.html"><span class="nav-link__icon">¤</span><span>Billing</span></a>
+    <a class="nav-link" data-nav="plan" href="./fleet-plan.html"><span class="nav-link__icon">★</span><span>Fleet Plan</span></a>
+    <a class="nav-link" data-nav="home-charging" href="./home-charging.html"><span class="nav-link__icon">⌂</span><span>Home Charging</span></a>
+  </div>
+  <div class="sidebar__group"><div class="sidebar__group-title">Analytics</div>
+    <a class="nav-link" data-nav="reports" href="./reports.html"><span class="nav-link__icon">▥</span><span>Reports</span></a>
+    <a class="nav-link" data-nav="alerts" href="./alerts.html"><span class="nav-link__icon">!</span><span>Alerts</span><span class="nav-link__badge" id="alert-badge">4</span></a>
+  </div>
+  <div class="sidebar__group"><div class="sidebar__group-title">Administration</div>
+    <a class="nav-link" data-nav="users" href="./users.html"><span class="nav-link__icon">♙</span><span>Users & Permissions</span></a>
+    <a class="nav-link" data-nav="settings" href="./fleet-settings.html"><span class="nav-link__icon">⚙</span><span>Fleet Settings</span></a>
+  </div>
+</nav><div class="sidebar__footer"><div class="sidebar__user"><span class="sidebar__avatar">NP</span><span><strong data-manager-name>Narek Petrosyan</strong><span data-company-name>Ararat Mobility</span></span></div></div></aside><div class="mobile-overlay" id="mobile-overlay"></div><div class="app-main"><header class="app-header"><div class="header__left"><button class="header__menu" id="menu-toggle" type="button">☰</button><div class="header__title"><strong>Billing</strong><span>Fleet charging costs, invoices and payment settings</span></div></div><div class="header__right"><span class="role-chip">Fleet Manager</span><div class="header-control"><span>Depot</span><strong data-depot-name>Yerevan Central Depot</strong></div><a class="header-control header-icon" href="./alerts.html" aria-label="Alerts">!<span class="header-icon__dot"></span></a></div></header><main class="page-content billing-page">
+<section class="fleet-hero"><div><span class="eyebrow">FINANCE</span><h1>Billing</h1><p>Manage fleet charging spend, invoices, transactions, cost allocation and corporate payment settings.</p></div><div class="hero-actions"><a class="button button--secondary" href="./fleet-plan.html">Fleet plan</a><button class="button button--secondary" id="export-transactions" type="button">Export CSV</button><button class="button button--primary" id="edit-billing-profile" type="button">Billing profile</button></div></section>
+
+<section class="finance-summary" id="billing-summary"></section>
+
+<div class="billing-tabs-row"><div class="ui-tabs" id="billing-tabs" role="tablist"><button class="ui-tab is-active" type="button" data-tab="overview">Overview</button><button class="ui-tab" type="button" data-tab="transactions">Transactions</button><button class="ui-tab" type="button" data-tab="allocation">Cost allocation</button></div><span class="panel-chip" id="billing-period-chip">—</span></div>
+
+<section data-billing-view="overview">
+  <div class="billing-layout">
+    <div class="ops-stack">
+      <section class="panel"><header class="panel__header"><div><h2>Current period breakdown</h2><p>Charging services and fleet reimbursements</p></div><span class="panel-chip" id="period-spend-chip">—</span></header><div class="panel__body breakdown" id="cost-breakdown"></div></section>
+      <section class="panel"><header class="panel__header"><div><h2>Invoices</h2><p>Corporate billing history and due dates</p></div><span class="panel-chip" id="invoice-count">—</span></header><div class="table-wrap"><table class="fleet-table billing-invoice-table"><thead><tr><th>Invoice</th><th>Period</th><th>Amount</th><th>Due date</th><th>Status</th><th></th></tr></thead><tbody id="invoice-table"></tbody></table></div></section>
+    </div>
+    <aside class="ops-stack">
+      <section class="panel"><header class="panel__header"><div><h2>Payment methods</h2><p>Corporate billing sources</p></div><button class="action-button" id="add-payment-method" type="button">Add</button></header><div class="panel__body billing-payment-list" id="payment-methods"></div></section>
+      <section class="panel"><header class="panel__header"><div><h2>Automatic payment</h2><p>Pay open invoices on the due date</p></div></header><div class="panel__body"><div class="setting-card"><label><span><strong>Auto-pay</strong><p id="autopay-state">Enabled</p></span><input class="switch" id="autopay" type="checkbox"></label></div><div class="ui-callout ui-callout--info billing-autopay-note"><strong>Payment policy</strong><span id="autopay-note">The default payment method will be charged automatically.</span></div></div></section>
+      <section class="panel"><header class="panel__header"><div><h2>Billing account</h2><p>Legal and tax details</p></div><button class="action-button" id="edit-billing-profile-2" type="button">Edit</button></header><div class="panel__body" id="billing-account"></div></section>
+    </aside>
+  </div>
+</section>
+
+<section data-billing-view="transactions" hidden>
+  <section class="panel"><header class="panel__header"><div><h2>Transactions</h2><p>Charging, fees, discounts and reimbursements</p></div><span class="panel-chip" id="transaction-count">—</span></header><div class="ui-toolbar"><div class="ui-toolbar__group"><label class="ui-search"><span>⌕</span><input id="transaction-search" type="search" placeholder="Search reference, vehicle or cost center"></label><select class="ui-select" id="transaction-status"><option value="all">All statuses</option><option value="posted">Posted</option><option value="pending">Pending</option></select><select class="ui-select" id="transaction-type"><option value="all">All types</option></select></div></div><div class="table-wrap"><table class="fleet-table"><thead><tr><th>Date</th><th>Type</th><th>Reference</th><th>Vehicle</th><th>Cost center</th><th>Status</th><th>Amount</th></tr></thead><tbody id="transaction-table"></tbody></table></div></section>
+</section>
+
+<section data-billing-view="allocation" hidden>
+  <div class="allocation-summary" id="allocation-summary"></div>
+  <section class="panel"><header class="panel__header"><div><h2>Cost centers</h2><p>Monthly charging spend by finance dimension</p></div><span class="panel-chip">Current period</span></header><div class="table-wrap"><table class="fleet-table"><thead><tr><th>Cost center</th><th>Department</th><th>Vehicles</th><th>Month spend</th><th>Share</th></tr></thead><tbody id="cost-center-table"></tbody></table></div></section>
+</section>
+
+<div class="ui-drawer-backdrop" id="invoice-drawer-backdrop" hidden></div>
+<aside class="ui-drawer billing-invoice-drawer" id="invoice-drawer" aria-hidden="true">
+  <header class="ui-drawer__header"><div><span class="eyebrow">INVOICE</span><h2 id="invoice-drawer-title">Invoice</h2><p id="invoice-drawer-subtitle">—</p></div><button class="ui-close" id="invoice-drawer-close" type="button" aria-label="Close">×</button></header>
+  <div class="ui-drawer__body" id="invoice-drawer-body"></div>
+  <footer class="ui-drawer__footer"><button class="button button--secondary" id="invoice-download" type="button">Download invoice</button><button class="button button--primary" id="invoice-pay" type="button">Pay now</button></footer>
+</aside>
+
+<dialog class="ui-dialog" id="payment-dialog"><form method="dialog" id="payment-form"><header class="ui-dialog__header"><div><h2>Add payment method</h2><p>Add a corporate card for invoices and automatic payment.</p></div><button class="ui-close" value="cancel" type="submit" aria-label="Close">×</button></header><div class="ui-dialog__body billing-form-grid"><label class="form-field"><span>Card type</span><select class="ui-select" id="payment-type"><option>Visa</option><option>Mastercard</option><option>Corporate card</option></select></label><label class="form-field"><span>Last 4 digits</span><input id="payment-last4" inputmode="numeric" maxlength="4" pattern="[0-9]{4}" placeholder="4821" required></label><label class="form-field"><span>Expiry</span><input id="payment-expiry" maxlength="5" placeholder="09/28" required></label><label class="form-field"><span>Use as default</span><select class="ui-select" id="payment-default"><option value="yes">Yes</option><option value="no">No</option></select></label></div><footer class="ui-dialog__footer"><button class="button button--secondary" value="cancel" type="submit">Cancel</button><button class="button button--primary" id="save-payment" value="default" type="submit">Save method</button></footer></form></dialog>
+
+<dialog class="ui-dialog" id="profile-dialog"><form method="dialog" id="profile-form"><header class="ui-dialog__header"><div><h2>Billing profile</h2><p>Company legal, tax and billing contact details.</p></div><button class="ui-close" value="cancel" type="submit" aria-label="Close">×</button></header><div class="ui-dialog__body billing-form-grid"><label class="form-field"><span>Legal company name</span><input id="profile-legal-name" required></label><label class="form-field"><span>Tax ID</span><input id="profile-tax-id" required></label><label class="form-field"><span>Billing email</span><input id="profile-email" type="email" required></label><label class="form-field"><span>Billing address</span><input id="profile-address" required></label><label class="form-field"><span>Payment terms</span><select class="ui-select" id="profile-terms"><option>Net 15</option><option>Net 30</option><option>Due on receipt</option></select></label><label class="form-field"><span>Currency</span><select class="ui-select" id="profile-currency"><option>AMD</option><option>USD</option><option>EUR</option></select></label></div><footer class="ui-dialog__footer"><button class="button button--secondary" value="cancel" type="submit">Cancel</button><button class="button button--primary" id="save-profile" value="default" type="submit">Save profile</button></footer></form></dialog>
+
+<dialog class="ui-dialog" id="pay-dialog"><form method="dialog" id="pay-form"><header class="ui-dialog__header"><div><h2>Pay invoice</h2><p id="pay-dialog-copy">Confirm corporate invoice payment.</p></div><button class="ui-close" value="cancel" type="submit" aria-label="Close">×</button></header><div class="ui-dialog__body"><div class="ui-callout ui-callout--info"><strong>Payment source</strong><span id="pay-method-copy">—</span></div></div><footer class="ui-dialog__footer"><button class="button button--secondary" value="cancel" type="submit">Cancel</button><button class="button button--primary" id="confirm-pay" value="default" type="submit">Confirm payment</button></footer></form></dialog>
+
+<div class="ui-toast" id="billing-toast" role="status" aria-live="polite"></div>
+</main></div></div><script type="module" src="./js/pages/billing.js?v=14.1"></script></body></html>

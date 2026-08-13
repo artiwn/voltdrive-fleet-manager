@@ -1,0 +1,122 @@
+<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b0b0d"><title>Energy — VoltDrive Fleet</title>
+<link rel="stylesheet" href="./css/core/reset.css"><link rel="stylesheet" href="./css/core/variables.css"><link rel="stylesheet" href="./css/core/typography.css"><link rel="stylesheet" href="./css/components/buttons.css"><link rel="stylesheet" href="./css/components/forms.css"><link rel="stylesheet" href="./css/components/fleet-ui.css"><link rel="stylesheet" href="./css/layout/app-layout.css"><link rel="stylesheet" href="./css/layout/sidebar.css"><link rel="stylesheet" href="./css/layout/header.css"><link rel="stylesheet" href="./css/pages/fleet.css"><link rel="stylesheet" href="./css/pages/shell-fixes.css"></head><body class="app-page"><div class="app-shell"><aside class="sidebar" id="sidebar"><a class="sidebar__brand" href="./dashboard.html"><span class="sidebar__mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 4.5 13h6L9 22l10.5-13h-6L13 2Z"/></svg></span><span>VoltDrive</span></a><div class="sidebar__caption">Fleet Manager</div><nav class="sidebar__nav" aria-label="Fleet navigation">
+  <div class="sidebar__group"><div class="sidebar__group-title">Overview</div>
+    <a class="nav-link" data-nav="dashboard" href="./dashboard.html"><span class="nav-link__icon">⌂</span><span>Dashboard</span></a>
+    <a class="nav-link" data-nav="operations" href="./operations.html"><span class="nav-link__icon">◉</span><span>Live Operations</span></a>
+  </div>
+  <div class="sidebar__group"><div class="sidebar__group-title">Fleet</div>
+    <a class="nav-link" data-nav="vehicles" href="./vehicles.html"><span class="nav-link__icon">◇</span><span>Vehicles</span></a>
+    <a class="nav-link" data-nav="drivers" href="./drivers.html"><span class="nav-link__icon">◎</span><span>Drivers</span></a>
+    <a class="nav-link" data-nav="schedules" href="./schedules.html"><span class="nav-link__icon">◷</span><span>Schedules</span></a>
+  </div>
+  <div class="sidebar__group"><div class="sidebar__group-title">Charging</div>
+    <a class="nav-link" data-nav="depot" href="./depot.html"><span class="nav-link__icon">ϟ</span><span>Depot & Chargers</span></a>
+    <a class="nav-link" data-nav="sessions" href="./sessions.html"><span class="nav-link__icon">↯</span><span>Charging Sessions</span></a>
+    <a class="nav-link" data-nav="reservations" href="./reservations.html"><span class="nav-link__icon">▣</span><span>Reservations</span></a>
+  </div>
+  <div class="sidebar__group"><div class="sidebar__group-title">Energy & Finance</div>
+    <a class="nav-link is-active" data-nav="energy" href="./energy.html"><span class="nav-link__icon">∿</span><span>Energy</span></a>
+    <a class="nav-link" data-nav="billing" href="./billing.html"><span class="nav-link__icon">¤</span><span>Billing</span></a>
+    <a class="nav-link" data-nav="plan" href="./fleet-plan.html"><span class="nav-link__icon">★</span><span>Fleet Plan</span></a>
+    <a class="nav-link" data-nav="home-charging" href="./home-charging.html"><span class="nav-link__icon">⌂</span><span>Home Charging</span></a>
+  </div>
+  <div class="sidebar__group"><div class="sidebar__group-title">Analytics</div>
+    <a class="nav-link" data-nav="reports" href="./reports.html"><span class="nav-link__icon">▥</span><span>Reports</span></a>
+    <a class="nav-link" data-nav="alerts" href="./alerts.html"><span class="nav-link__icon">!</span><span>Alerts</span><span class="nav-link__badge" id="alert-badge">4</span></a>
+  </div>
+  <div class="sidebar__group"><div class="sidebar__group-title">Administration</div>
+    <a class="nav-link" data-nav="users" href="./users.html"><span class="nav-link__icon">♙</span><span>Users & Permissions</span></a>
+    <a class="nav-link" data-nav="settings" href="./fleet-settings.html"><span class="nav-link__icon">⚙</span><span>Fleet Settings</span></a>
+  </div>
+</nav><div class="sidebar__footer"><div class="sidebar__user"><span class="sidebar__avatar">NP</span><span><strong data-manager-name>Narek Petrosyan</strong><span data-company-name>Ararat Mobility</span></span></div></div></aside><div class="mobile-overlay" id="mobile-overlay"></div><div class="app-main"><header class="app-header"><div class="header__left"><button class="header__menu" id="menu-toggle" type="button">☰</button><div class="header__title"><strong>Energy</strong><span>Depot load, allocation and energy cost controls</span></div></div><div class="header__right"><span class="role-chip">Fleet Manager</span><div class="header-control"><span>Depot</span><strong data-depot-name>Yerevan Central Depot</strong></div><a class="header-control header-icon" href="./alerts.html" aria-label="Alerts">!<span class="header-icon__dot"></span></a></div></header><main class="page-content">
+<section class="fleet-hero fleet-hero--energy">
+  <div><span class="eyebrow">ENERGY MANAGEMENT</span><h1>Power management center</h1><p>Balance vehicle readiness, depot capacity, renewable energy and electricity cost in real time.</p></div>
+  <div class="hero-actions"><a class="button button--secondary" href="./billing.html">View energy cost</a><button class="button button--secondary" id="edit-strategy" type="button">Energy strategy</button><button class="button button--primary" id="rebalance-power" type="button">Rebalance power</button></div>
+</section>
+
+<section class="kpi-grid energy-kpi-grid" id="energy-kpis"></section>
+
+<div class="energy-command-grid">
+  <div class="ops-stack">
+    <section class="panel energy-live-panel">
+      <header class="panel__header"><div><h2>Live site load</h2><p>Electrical capacity and current demand across the depot</p></div><span class="panel-chip" id="energy-mode-chip">—</span></header>
+      <div class="panel__body">
+        <div class="energy-load-head"><div><span>Current site demand</span><strong id="energy-load">—</strong><small id="energy-capacity">—</small></div><div class="energy-load-percent"><strong id="energy-percent">—</strong><span>of site capacity</span></div></div>
+        <div class="energy-capacity-track"><span id="energy-bar"></span><i id="energy-peak-marker" aria-hidden="true"></i></div>
+        <div class="energy-capacity-scale"><span>0 kW</span><span id="energy-peak-label">Peak limit —</span><span id="energy-capacity-label">—</span></div>
+        <div class="energy-flow-grid" id="energy-flow-grid"></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <header class="panel__header"><div><h2>Vehicle power allocation</h2><p>Current charging power by vehicle, priority and departure requirement</p></div><span class="panel-chip" id="allocation-total">—</span></header>
+      <div class="table-wrap"><table class="fleet-table energy-allocation-table"><thead><tr><th>Vehicle</th><th>Charger</th><th>Priority</th><th>SOC</th><th>Allocated</th><th>Charger limit</th><th>Departure</th><th></th></tr></thead><tbody id="allocation-table"></tbody></table></div>
+    </section>
+
+    <section class="panel">
+      <header class="panel__header"><div><h2>24-hour demand forecast</h2><p>Prototype projection based on planned departures and charging demand</p></div><span class="panel-chip" id="forecast-peak-chip">—</span></header>
+      <div class="panel__body"><div class="energy-forecast" id="energy-forecast"></div><div class="energy-forecast-legend"><span><i class="energy-legend-dot energy-legend-dot--load"></i>Projected site demand</span><span><i class="energy-legend-dot energy-legend-dot--limit"></i>Configured peak limit</span></div></div>
+    </section>
+  </div>
+
+  <aside class="ops-stack energy-rail">
+    <section class="panel">
+      <header class="panel__header"><div><h2>Load strategy</h2><p>Automation and protection policy</p></div><button class="action-button" id="edit-strategy-inline" type="button">Edit</button></header>
+      <div class="panel__body" id="strategy-summary"></div>
+    </section>
+
+    <section class="panel">
+      <header class="panel__header"><div><h2>Energy sources</h2><p>Current supply and consumption mix</p></div></header>
+      <div class="panel__body"><div class="energy-source-grid energy-source-grid--management" id="energy-sources"></div></div>
+    </section>
+
+    <section class="panel">
+      <header class="panel__header"><div><h2>Electricity price windows</h2><p>Local tariff periods used by smart charging</p></div></header>
+      <div class="panel__body"><div class="energy-price-list" id="energy-price-list"></div></div>
+    </section>
+
+    <section class="panel">
+      <header class="panel__header"><div><h2>Optimization status</h2><p>What the energy controller is doing now</p></div></header>
+      <div class="panel__body"><div class="energy-optimization-list" id="optimization-list"></div></div>
+    </section>
+  </aside>
+</div>
+
+<div class="ui-drawer-backdrop" id="energy-drawer-backdrop" hidden></div>
+<aside class="ui-drawer energy-drawer" id="energy-drawer" aria-hidden="true">
+  <header class="ui-drawer__header"><div><span class="eyebrow">POWER ALLOCATION</span><h2 id="energy-drawer-title">Vehicle power</h2><p id="energy-drawer-subtitle">—</p></div><button class="ui-close" id="energy-drawer-close" type="button" aria-label="Close">×</button></header>
+  <div class="ui-drawer__body" id="energy-drawer-body"></div>
+  <footer class="ui-drawer__footer"><a class="button button--secondary" id="energy-view-vehicle" href="./vehicles.html">Vehicle details</a><button class="button button--primary" id="energy-adjust-power" type="button">Adjust power</button></footer>
+</aside>
+
+<dialog class="ui-dialog energy-strategy-dialog" id="energy-strategy-dialog">
+  <header class="ui-dialog__header"><div><h2>Energy strategy</h2><p>Set the operating mode and electrical limits for this depot.</p></div><button class="ui-close" value="cancel" formmethod="dialog" type="submit" form="energy-strategy-form" aria-label="Close">×</button></header>
+  <form id="energy-strategy-form" method="dialog">
+    <div class="ui-dialog__body energy-strategy-form">
+      <label class="form-field"><span>Operating mode</span><select class="ui-select" id="strategy-mode"><option value="auto">Automatic optimization</option><option value="manual">Manual allocation</option></select></label>
+      <div class="energy-form-grid">
+        <label class="form-field"><span>Peak demand limit</span><div class="energy-input-unit"><input id="strategy-peak-limit" type="number" min="200" max="600" step="10"><b>kW</b></div></label>
+        <label class="form-field"><span>Safety reserve</span><div class="energy-input-unit"><input id="strategy-reserve" type="number" min="0" max="150" step="10"><b>kW</b></div></label>
+      </div>
+      <div class="settings-grid energy-strategy-switches">
+        <div class="setting-card"><label><strong>Smart priority</strong><input class="switch" id="strategy-smart-priority" type="checkbox"></label><p>Give more power to critical vehicles and earlier departures.</p></div>
+        <div class="setting-card"><label><strong>Peak protection</strong><input class="switch" id="strategy-peak-protection" type="checkbox"></label><p>Keep total site demand below the configured peak limit.</p></div>
+        <div class="setting-card"><label><strong>Solar preference</strong><input class="switch" id="strategy-solar" type="checkbox"></label><p>Prefer charging when local solar generation is available.</p></div>
+        <div class="setting-card"><label><strong>Battery assist</strong><input class="switch" id="strategy-battery" type="checkbox"></label><p>Allow the site battery to support demand during higher load periods.</p></div>
+      </div>
+      <div class="ui-callout ui-callout--info"><strong>Prototype behavior</strong><span>Saving changes updates the local energy policy. Rebalance power applies the new limits to active charging vehicles.</span></div>
+    </div>
+    <footer class="ui-dialog__footer"><button class="button button--secondary" value="cancel" type="submit">Cancel</button><button class="button button--primary" id="save-energy-strategy" value="default" type="submit">Save strategy</button></footer>
+  </form>
+</dialog>
+
+<dialog class="ui-dialog" id="power-dialog">
+  <header class="ui-dialog__header"><div><h2 id="power-dialog-title">Adjust charging power</h2><p id="power-dialog-subtitle">—</p></div><button class="ui-close" value="cancel" formmethod="dialog" type="submit" form="power-form" aria-label="Close">×</button></header>
+  <form id="power-form" method="dialog">
+    <div class="ui-dialog__body"><div id="power-dialog-body"></div></div>
+    <footer class="ui-dialog__footer"><button class="button button--secondary" value="cancel" type="submit">Cancel</button><button class="button button--primary" id="save-power" value="default" type="submit">Apply power</button></footer>
+  </form>
+</dialog>
+
+<div class="ui-toast" id="energy-toast" role="status"></div>
+</main></div></div><script type="module" src="./js/pages/energy.js?v=14.1"></script></body></html>
