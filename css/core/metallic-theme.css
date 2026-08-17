@@ -1,0 +1,378 @@
+/* VoltDrive Fleet Manager — Metallic Theme
+   Visual compatibility layer adapted from the approved VoltDrive Driver metallic UI.
+   This file intentionally leaves DOM structure, layout contracts and JS hooks untouched. */
+
+:root{
+  --color-bg:#090a0b;
+  --color-bg-elevated:#111315;
+  --color-card:#171a1c;
+  --color-surface:#23272a;
+  --color-text:#f4f6f8;
+  --color-text-muted:#9aa3a9;
+  --color-text-soft:#737d83;
+  --color-primary:#d9dde0;
+  --color-primary-hover:#eef1f3;
+  --color-success:#45d48b;
+  --color-error:#ff5f57;
+  --color-border:rgba(255,255,255,.095);
+  --color-border-strong:rgba(255,255,255,.17);
+  --shadow-card:0 22px 54px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.055);
+
+  --color-text-primary:var(--color-text);
+  --color-text-secondary:var(--color-text-muted);
+  --color-surface-card:var(--color-card);
+  --color-surface-secondary:#1b1f22;
+  --color-surface-elevated:#202529;
+  --color-surface-raised:#292f33;
+
+  --fleet-success:#45d48b;
+  --fleet-warning:#f5b942;
+  --fleet-error:#ff5f57;
+  --fleet-info:#72a7ff;
+}
+
+html{color-scheme:dark}
+body.app-page{
+  background:
+    radial-gradient(circle at 17% 7%,rgba(112,122,128,.22) 0,rgba(42,47,50,.12) 21%,transparent 40%),
+    radial-gradient(circle at 92% 91%,rgba(76,84,89,.10),transparent 31%),
+    linear-gradient(145deg,#0d0f10 0%,#090a0b 48%,#070809 100%) !important;
+  color:var(--color-text);
+}
+body.app-page::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:-1;
+  pointer-events:none;
+  opacity:.05;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.42'/%3E%3C/svg%3E");
+}
+
+*{scrollbar-color:#42494e #111315}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:#111315}
+::-webkit-scrollbar-thumb{
+  background:linear-gradient(180deg,#4a5257,#2b3034);
+  border:2px solid #111315;
+  border-radius:999px;
+}
+
+/* --------------------------------------------------------------------------
+   Application shell / sidebar
+   -------------------------------------------------------------------------- */
+.sidebar{
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+  background:
+    linear-gradient(180deg,rgba(35,39,42,.97) 0%,rgba(18,21,23,.985) 38%,rgba(10,12,13,.995) 100%) !important;
+  border-right-color:rgba(255,255,255,.10) !important;
+  box-shadow:inset -1px 0 0 rgba(255,255,255,.025),20px 0 60px rgba(0,0,0,.18);
+}
+.sidebar__brand{flex:0 0 auto}
+.sidebar__caption{flex:0 0 auto;color:#8b949a !important}
+.sidebar__mark{
+  background:linear-gradient(145deg,#eef1f3 0%,#aeb6bb 48%,#687177 100%) !important;
+  color:#111416 !important;
+  box-shadow:0 10px 28px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.9) !important;
+}
+.sidebar__mark svg{color:#171b1d !important;stroke:currentColor !important}
+.sidebar__nav{
+  flex:0 0 auto !important;
+  min-height:auto !important;
+  overflow:visible !important;
+  align-content:start;
+  padding-bottom:16px;
+}
+.sidebar::-webkit-scrollbar{width:6px}
+.sidebar::-webkit-scrollbar-track{background:transparent}
+.sidebar::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#4a5257,#2b3034);border:0;border-radius:999px}
+.sidebar__group-title{color:#737d83 !important}
+.nav-link:hover{
+  background:linear-gradient(135deg,rgba(255,255,255,.075),rgba(255,255,255,.025)) !important;
+  color:#f4f6f8 !important;
+}
+.nav-link.is-active{
+  background:linear-gradient(135deg,rgba(220,225,228,.18),rgba(112,123,130,.07)) !important;
+  color:#f5f7f8 !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08),inset 0 0 0 1px rgba(255,255,255,.04);
+}
+.nav-link__badge{
+  background:linear-gradient(145deg,#e6eaec,#929ba1) !important;
+  color:#121517 !important;
+}
+.sidebar__footer{
+  position:sticky !important;
+  bottom:-24px !important;
+  flex:0 0 auto !important;
+  margin-top:auto !important;
+  padding-top:28px !important;
+  padding-bottom:18px !important;
+  background:linear-gradient(180deg,rgba(13,15,16,.30),rgba(9,10,11,.88)) !important;
+  border-top-color:rgba(255,255,255,.09) !important;
+}
+.sidebar__avatar{
+  background:linear-gradient(145deg,#3d4448,#1d2124 64%,#111315) !important;
+  border:1px solid rgba(255,255,255,.10);
+  color:#eef2f4;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08);
+}
+
+.app-header{
+  background:rgba(14,16,17,.82) !important;
+  border-bottom-color:rgba(255,255,255,.10) !important;
+  box-shadow:0 12px 32px rgba(0,0,0,.16),inset 0 -1px 0 rgba(255,255,255,.02);
+  backdrop-filter:blur(22px) saturate(115%) !important;
+}
+.reports-page .app-header{background:rgba(14,16,17,.96) !important}
+.header-control,.header__menu,.icon-button,.ui-close,.role-chip{
+  background:linear-gradient(145deg,#202427,#131618) !important;
+  border-color:rgba(255,255,255,.115) !important;
+  color:#eef1f3 !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.055);
+}
+.header-control:hover,.header__menu:hover,.icon-button:hover,.ui-close:hover{
+  background:linear-gradient(145deg,#292e32,#171a1c) !important;
+  border-color:rgba(255,255,255,.18) !important;
+}
+.header-icon__dot{background:#d9dde0 !important;box-shadow:0 0 0 3px #171a1c !important}
+.vehicle-select select option{background:#171a1c !important;color:#f4f6f8 !important}
+
+/* --------------------------------------------------------------------------
+   Controls
+   -------------------------------------------------------------------------- */
+.button--primary{
+  background:linear-gradient(135deg,#f3f5f6 0%,#c7cdd1 48%,#929ba1 100%) !important;
+  color:#15191b !important;
+  border:1px solid rgba(255,255,255,.38) !important;
+  box-shadow:0 12px 28px rgba(0,0,0,.26),inset 0 1px 0 #fff;
+}
+.button--primary:hover{
+  background:linear-gradient(135deg,#fff 0%,#dce1e4 50%,#a8b0b5 100%) !important;
+}
+.button--primary :is(span,strong,svg,path){color:#15191b !important;fill:currentColor;stroke:currentColor}
+.button--secondary,.action-button:not(.action-button--danger):not(.action-button--primary){
+  background:linear-gradient(145deg,#202427,#131618) !important;
+  border-color:rgba(255,255,255,.115) !important;
+  color:#eef1f3 !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.055);
+}
+.button--secondary:hover,.action-button:not(.action-button--danger):not(.action-button--primary):hover{
+  background:linear-gradient(145deg,#292e32,#171a1c) !important;
+  border-color:rgba(255,255,255,.18) !important;
+}
+.action-button--primary{
+  background:linear-gradient(145deg,rgba(218,224,228,.17),rgba(112,123,130,.08)) !important;
+  border-color:rgba(220,226,229,.38) !important;
+  color:#eef3f5 !important;
+}
+.text-action{color:#dfe4e7 !important}
+
+:is(.field input,.field select,.form-field input,.form-field textarea,.form-field select,
+.ui-select,.ui-toolbar select,.ui-search,.filter-bar input,.filter-bar select,.priority-select,
+.setting-card select,.setting-inline-input input,.driver-vehicle-select,.vehicle-form-grid input,
+.vehicle-form-grid select,.reservation-field input,.reservation-field select,.energy-input-unit,
+.energy-input-unit input,.access-preview__select,.ops-search){
+  background-color:#101315 !important;
+  color:#eef2f4 !important;
+  border-color:rgba(255,255,255,.105) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025);
+}
+.ui-search input,.ops-search input{background:transparent !important;box-shadow:none !important}
+:is(.field input,.field select,.form-field input,.form-field textarea,.form-field select,
+.ui-select,.ui-toolbar select,.filter-bar input,.filter-bar select,.priority-select,
+.setting-card select,.setting-inline-input input,.driver-vehicle-select,.vehicle-form-grid input,
+.vehicle-form-grid select,.reservation-field input,.reservation-field select,.energy-input-unit input):focus{
+  border-color:rgba(207,214,218,.52) !important;
+  box-shadow:0 0 0 4px rgba(199,205,209,.08),inset 0 1px 0 rgba(255,255,255,.04) !important;
+}
+:is(input,textarea)::placeholder{color:#727b81 !important}
+:is(select,.ui-select) option{background:#15181a !important;color:#eef2f4 !important}
+.checkbox input{accent-color:#bfc6ca !important}
+
+/* --------------------------------------------------------------------------
+   Core metallic surfaces
+   -------------------------------------------------------------------------- */
+.panel,.kpi-card,.vehicle-summary-card,.stat-tile,.finance-card,.setting-card,
+.alert-item,.charger-card,.more-card,.vehicle-focus-card,.vehicle-focus-stat,
+.charger-detail-grid>div,.queue-list .queue-row,.energy-source,.alert-summary-card,
+.alert-command-strip>div,.alert-context-grid>div,.more-overview-grid>div,.schedule-card,
+.report-status-grid>div,.reimbursement-card,.ops-power-metrics>div,.ops-right-rail .queue-row,
+.ops-choice,.ops-charger-option,.ops-popover,.vehicle-profile-hero,.driver-choice,.charger-live-row,
+.depot-rail-card,.bay-card,.connector-row,.charger-assignment-card,.session-detail-hero,
+.reservation-detail-hero,.reservation-assignment-card,.reservation-access-card,.reservation-stepper,
+.reservation-choice,.reservation-vehicle-preview,.reservation-charge-hero>div,.reservation-cost-card,
+.reservation-review-head,.energy-flow-card,.energy-price-row>div,.energy-optimization-item,
+.energy-allocation-hero,.energy-power-adjust__head,.billing-payment-card,.billing-invoice-hero,
+.plan-usage-card,.plan-tier-card,.plan-dialog-option,.capacity-option,.plan-capacity-preview>div,
+.driver-profile-hero,.schedule-detail-hero,.report-trend-summary>div,.report-status-card,
+.report-home-summary>div,.report-drawer-kpis>div,.report-drawer-session-list>div,
+.admin-role-card,.admin-profile-hero,.admin-permission-group,.home-policy-grid>div,
+.home-detail-hero,.home-evidence-item,.home-timeline-item,.home-batch-row,.home-policy-row,
+.alert-comment,.access-preview,.access-denied-card,.session-timeout-card{
+  background:linear-gradient(145deg,rgba(31,35,38,.97) 0%,rgba(18,21,23,.98) 60%,rgba(25,29,31,.97) 100%) !important;
+  border-color:rgba(255,255,255,.105) !important;
+  box-shadow:0 16px 38px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.052);
+}
+
+/* Stronger premium metal for high-value summary surfaces. */
+.finance-card--primary,.plan-hero,.vehicle-focus-card,.charger-detail-hero,
+.session-detail-hero,.reservation-detail-hero,.energy-allocation-hero,.billing-invoice-hero,
+.driver-profile-hero,.schedule-detail-hero,.home-detail-hero{
+  background:
+    radial-gradient(circle at 82% 8%,rgba(255,255,255,.15),transparent 29%),
+    linear-gradient(145deg,#33393d 0%,#1a1e20 46%,#111315 72%,#252a2d 100%) !important;
+  border:1px solid rgba(255,255,255,.14) !important;
+  box-shadow:0 22px 48px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.09) !important;
+}
+
+.operations-strip,.energy-snapshot,.home-policy-grid{
+  background:rgba(255,255,255,.095) !important;
+  border-color:rgba(255,255,255,.105) !important;
+  box-shadow:0 16px 38px rgba(0,0,0,.14),inset 0 1px 0 rgba(255,255,255,.035);
+}
+.operations-strip>div,.energy-stat{
+  background:linear-gradient(145deg,#202427,#15181a) !important;
+}
+.panel__header,.ui-drawer__header,.ui-drawer__footer,.ui-dialog__header,.ui-dialog__footer{
+  border-color:rgba(255,255,255,.095) !important;
+}
+
+/* Tables */
+.table-wrap,.fleet-table-wrap,.table-scroll{scrollbar-color:#42494e transparent}
+.fleet-table th,.fleet-table td{border-bottom-color:rgba(255,255,255,.075) !important}
+.fleet-table th{color:#929ca2 !important}
+.fleet-table tbody tr:hover,.ops-table tbody tr:hover,.vehicle-table tbody tr:hover,
+.session-row:hover,.reservation-row:hover,.driver-table tbody tr:hover,.schedule-table tbody tr:hover,
+.admin-user-table tbody tr:hover,.energy-allocation-table tbody tr:hover{
+  background:rgba(255,255,255,.032) !important;
+}
+
+/* Compact metallic tiles and icons */
+.more-card__icon,.vehicle-identity__icon,.reservation-assignment__icon,.reservation-choice__icon,
+.reservation-review-icon,.billing-payment-card__icon,.connector-icon,.ui-avatar,.queue-position{
+  background:linear-gradient(145deg,#292e31,#171a1c) !important;
+  border-color:rgba(255,255,255,.09) !important;
+  color:#dfe5e8 !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.055);
+}
+.more-card:hover,.charger-card:hover,.schedule-card:hover,.admin-role-card:hover{
+  border-color:rgba(255,255,255,.18) !important;
+  background:linear-gradient(145deg,#30363a,#1b1f22) !important;
+}
+
+/* Selected states — selection is metal, semantic status remains coloured. */
+:is(.ops-choice,.ops-charger-option,.driver-choice,.reservation-choice,.plan-dialog-option,.capacity-option).is-selected,
+:is(.ops-choice,.ops-charger-option,.driver-choice,.reservation-choice):has(input:checked),
+.plan-tier-card.is-current,.billing-payment-card.is-default,.capacity-option.is-selected,.plan-dialog-option.is-selected{
+  border-color:rgba(220,226,229,.46) !important;
+  background:linear-gradient(145deg,#343a3e,#1b1f22) !important;
+  box-shadow:0 0 0 1px rgba(255,255,255,.07) inset,0 12px 30px rgba(0,0,0,.20) !important;
+}
+.ui-tabs{
+  background:linear-gradient(145deg,#1d2123,#111315) !important;
+  border-color:rgba(255,255,255,.10) !important;
+}
+.ui-tab.is-active,.settings-tabs .ui-tab.is-active{
+  background:linear-gradient(145deg,rgba(221,226,229,.19),rgba(115,126,133,.08)) !important;
+  color:#f4f7f8 !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.06);
+}
+.ui-row-menu:hover{background:linear-gradient(145deg,#292e32,#171a1c) !important}
+
+/* Drawers / dialogs */
+.ui-drawer,.ops-drawer,.vehicle-drawer,.alert-detail-drawer,.reservation-drawer,.session-drawer,
+.admin-user-drawer,.admin-role-drawer,.home-claim-drawer{
+  background:linear-gradient(145deg,#252a2d,#121416 64%,#1b1f21) !important;
+  border-left-color:rgba(255,255,255,.12) !important;
+  box-shadow:-28px 0 80px rgba(0,0,0,.48),inset 1px 0 0 rgba(255,255,255,.05) !important;
+}
+.ui-drawer__footer{background:rgba(15,17,18,.92) !important}
+.ui-dialog,.ops-dialog,.vehicle-dialog,.reservation-dialog,.session-stop-dialog,.plan-dialog,
+.admin-dialog,.admin-role-dialog,.alert-manage-dialog,.alert-resolve-dialog{
+  background:linear-gradient(145deg,#252a2d,#121416 64%,#1b1f21) !important;
+  border-color:rgba(255,255,255,.14) !important;
+  box-shadow:0 30px 100px rgba(0,0,0,.62),inset 0 1px 0 rgba(255,255,255,.07) !important;
+}
+.ui-dialog::backdrop{background:rgba(3,4,5,.76) !important;backdrop-filter:blur(8px) !important}
+.ui-drawer-backdrop,.ops-drawer-backdrop,.vehicle-drawer-backdrop{background:rgba(3,4,5,.66) !important;backdrop-filter:blur(7px)}
+
+/* Metallic chart and progress tracks, preserving semantic bar colours. */
+.progress,.mini-progress,.allocation-bar,.ui-progress,.ops-soc__track,.session-progress__track,
+.energy-capacity-track,.energy-power-track,.report-trend-bar-wrap{
+  background:linear-gradient(180deg,#30363a,#1b1f22) !important;
+  box-shadow:inset 0 1px 3px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.035);
+}
+.score-ring:after,.report-readiness-ring:after{background:#181b1d !important;box-shadow:inset 0 1px 0 rgba(255,255,255,.05)}
+.session-chart{
+  background:
+    linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px),
+    radial-gradient(circle at 50% 42%,#23282b,#121517 62%,#0d0f10) !important;
+}
+
+/* Finance / plan */
+.plan-tier-card__limits span,.admin-role-card__meta span{
+  background:linear-gradient(145deg,#2a2f32,#181b1d) !important;
+  color:#cdd3d6 !important;
+  border:1px solid rgba(255,255,255,.055);
+}
+.billing-payment-card.is-default::before,.plan-tier-card.is-current::before{
+  color:#dfe4e7 !important;
+}
+
+/* Semantic states: keep status meaning intact. */
+.status-charging,.status-ready,.status-available,.status-active,.status-confirmed,
+.status-paid,.status-posted,.status-approved,.status-badge--success{
+  background:rgba(69,212,139,.12) !important;
+  color:#65df9d !important;
+}
+.status-risk,.status-faulty,.status-maintenance,.status-offline,.status-suspended,.status-conflict,
+.status-failed,.status-declined,.status-cancelled,.status-rejected,.status-badge--error,
+.priority-critical{
+  background:rgba(255,95,87,.12) !important;
+  color:#ff837c !important;
+}
+.status-queued,.status-reserved,.status-planned,.status-review,.status-queued-payment,
+.status-badge--info,.priority-normal{
+  background:rgba(114,167,255,.12) !important;
+  color:#83b2ff !important;
+}
+.status-occupied,.status-attention,.status-open,.status-pending,.status-badge--warning,.priority-high{
+  background:rgba(245,185,66,.12) !important;
+  color:#f5c35d !important;
+}
+.status-refunded,.status-draft,.status-unpaid,.priority-low{
+  background:rgba(160,168,173,.11) !important;
+  color:#aeb6bb !important;
+}
+.alert-summary-card--critical,.row-risk,.session-row--failed,.ops-table tbody tr.ops-vehicle-row--risk{
+  background:linear-gradient(145deg,rgba(54,29,29,.74),rgba(24,20,20,.92)) !important;
+}
+.alert-summary-card--warning{
+  background:linear-gradient(145deg,rgba(54,45,27,.64),rgba(24,22,18,.92)) !important;
+}
+
+.ui-callout--info{background:rgba(114,167,255,.065) !important;border-color:rgba(114,167,255,.22) !important}
+.ui-callout--warning{background:rgba(245,185,66,.065) !important;border-color:rgba(245,185,66,.22) !important}
+.ui-callout--danger,.ui-risk-banner{background:rgba(255,95,87,.075) !important;border-color:rgba(255,95,87,.24) !important}
+
+/* Text hierarchy */
+.fleet-hero h1{color:#f5f7f8;text-shadow:0 1px 0 rgba(255,255,255,.035)}
+.eyebrow{color:#aeb7bc !important}
+.panel-kicker{color:#8f999f !important}
+a{color:inherit}
+.panel__header a,.text-link{color:#dbe1e4 !important}
+
+/* Focus */
+:focus-visible{outline:3px solid rgba(207,214,218,.48);outline-offset:2px}
+.field.is-invalid input{border-color:var(--color-error) !important;box-shadow:0 0 0 4px rgba(255,95,87,.10) !important}
+
+/* Keep mobile drawer geometry stable. */
+@media(max-width:1040px){
+  .sidebar{
+    height:100dvh !important;
+    box-shadow:30px 0 80px rgba(0,0,0,.52),inset -1px 0 0 rgba(255,255,255,.04);
+  }
+}
+.button--primary .button__spinner{border-color:rgba(21,25,27,.28);border-top-color:#15191b}
