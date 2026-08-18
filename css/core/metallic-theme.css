@@ -171,7 +171,7 @@ body.app-page::before{
 :is(.field input,.field select,.form-field input,.form-field textarea,.form-field select,
 .ui-select,.ui-toolbar select,.ui-search,.filter-bar input,.filter-bar select,.priority-select,
 .setting-card select,.setting-inline-input input,.driver-vehicle-select,.vehicle-form-grid input,
-.vehicle-form-grid select,.reservation-field input,.reservation-field select,.energy-input-unit,
+.vehicle-form-grid select,.structure-create-form input,.reservation-field input,.reservation-field select,.energy-input-unit,
 .energy-input-unit input,.access-preview__select,.ops-search){
   background-color:#101315 !important;
   color:#eef2f4 !important;
@@ -182,7 +182,7 @@ body.app-page::before{
 :is(.field input,.field select,.form-field input,.form-field textarea,.form-field select,
 .ui-select,.ui-toolbar select,.filter-bar input,.filter-bar select,.priority-select,
 .setting-card select,.setting-inline-input input,.driver-vehicle-select,.vehicle-form-grid input,
-.vehicle-form-grid select,.reservation-field input,.reservation-field select,.energy-input-unit input):focus{
+.vehicle-form-grid select,.structure-create-form input,.reservation-field input,.reservation-field select,.energy-input-unit input):focus{
   border-color:rgba(207,214,218,.52) !important;
   box-shadow:0 0 0 4px rgba(199,205,209,.08),inset 0 1px 0 rgba(255,255,255,.04) !important;
 }
