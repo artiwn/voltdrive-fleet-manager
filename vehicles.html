@@ -52,10 +52,11 @@
  <label><span>Vehicle name</span><input id="form-name" required></label><label><span>Registration plate</span><input id="form-plate" required></label>
  <label><span>Manufacturer</span><input id="form-manufacturer"></label><label><span>Model</span><input id="form-model"></label>
  <label><span>VIN</span><input id="form-vin"></label><label><span>Battery capacity, kWh</span><input id="form-capacity" type="number" min="20" max="250"></label>
- <label><span>Connector</span><select id="form-connector"><option>CCS2</option><option>Type 2</option><option>CCS2 + Type 2</option></select></label><label><span>Preferred target SOC</span><input id="form-target" type="number" min="40" max="100"></label>
- <label><span>Route</span><input id="form-route"></label><label><span>Next departure</span><input id="form-departure" type="time"></label>
+ <label><span>Compatible connectors</span><select id="form-connector"><option>CCS2</option><option>Type 2</option><option>CCS2 + Type 2</option></select></label><label><span>Preferred target SOC</span><input id="form-target" type="number" min="40" max="100"></label>
+ <label><span>Prototype max AC, kW</span><input id="form-max-ac" type="number" min="0" max="50" step="1"></label><label><span>Prototype max DC, kW</span><input id="form-max-dc" type="number" min="0" max="500" step="1"></label>
+ <label><span>Depot</span><select id="form-depot"></select></label><label><span>Route</span><select id="form-route"></select></label><label><span>Next departure</span><input id="form-departure" type="time"></label>
  </div><div class="ui-dialog__footer ops-dialog__footer"><button class="button" value="cancel" type="submit">Cancel</button><button class="button button--primary" id="vehicle-save" value="default" type="submit">Save vehicle</button></div></form></dialog>
 
 <dialog class="ui-dialog ops-dialog vehicle-dialog" id="driver-dialog"><form method="dialog" id="driver-form"><div class="ui-dialog__header ops-dialog__header"><div><h2>Assign driver</h2><p id="driver-dialog-copy">Choose the active driver for this vehicle.</p></div><button class="ui-close" value="cancel" type="submit">×</button></div><div class="ui-dialog__body ops-dialog__body"><div class="driver-choice-list" id="driver-choice-list"></div></div><div class="ui-dialog__footer ops-dialog__footer"><button class="button" value="cancel" type="submit">Cancel</button><button class="button button--primary" value="default" type="submit">Assign driver</button></div></form></dialog>
 <div class="ui-toast ops-toast" id="vehicle-toast" role="status"></div>
-</main></div></div><script type="module" src="./js/pages/vehicles.js?v=14.1"></script></body></html>
+</main></div></div><script type="module" src="./js/pages/vehicles.js?v=20.1"></script></body></html>

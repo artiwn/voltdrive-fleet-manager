@@ -32,7 +32,7 @@
 <section class="fleet-hero"><div><span class="eyebrow">CHARGING PLANNING</span><h1>Reservations</h1><p>Plan charging capacity before arrival, protect departure readiness and manage charger or bay assignments.</p></div><div class="hero-actions"><button class="button button--primary" id="new-reservation" type="button">New reservation</button></div></section>
 
 <section class="kpi-grid reservation-kpi-grid">
-  <article class="kpi-card"><span>Upcoming</span><strong id="reservation-upcoming">—</strong><small>Confirmed fleet bookings</small></article>
+  <article class="kpi-card"><span>Upcoming</span><strong id="reservation-upcoming">—</strong><small>Confirmed + waiting list</small></article>
   <article class="kpi-card"><span>Active now</span><strong id="reservation-active">—</strong><small>Vehicles currently charging</small></article>
   <article class="kpi-card"><span>Auto assignment</span><strong id="reservation-auto">—</strong><small>Charger assigned on arrival</small></article>
   <article class="kpi-card"><span>Reserved bays</span><strong id="reservation-bays">—</strong><small>Dedicated parking capacity</small></article>
@@ -44,7 +44,10 @@
     <div class="ui-tabs" role="tablist" aria-label="Reservation status">
       <button class="ui-tab is-active" type="button" data-reservation-filter="upcoming">Upcoming</button>
       <button class="ui-tab" type="button" data-reservation-filter="active">Active</button>
+      <button class="ui-tab" type="button" data-reservation-filter="draft">Drafts</button>
       <button class="ui-tab" type="button" data-reservation-filter="completed">Completed</button>
+      <button class="ui-tab" type="button" data-reservation-filter="no-show">No-show</button>
+      <button class="ui-tab" type="button" data-reservation-filter="expired">Expired</button>
       <button class="ui-tab" type="button" data-reservation-filter="cancelled">Cancelled</button>
       <button class="ui-tab" type="button" data-reservation-filter="all">All</button>
     </div>
@@ -71,7 +74,7 @@
     <header class="ui-dialog__header"><div><h2 id="reservation-dialog-title">New fleet reservation</h2><p id="reservation-dialog-copy">Reserve charging capacity for a vehicle before it arrives at the depot.</p></div><button class="ui-close" value="cancel" type="submit" aria-label="Close">×</button></header>
     <div class="reservation-stepper" id="reservation-stepper" aria-label="Reservation progress"></div>
     <div class="ui-dialog__body reservation-dialog__body" id="reservation-dialog-body"></div>
-    <footer class="ui-dialog__footer reservation-dialog__footer"><button class="button button--secondary" id="reservation-back" type="button">Back</button><button class="button button--primary" id="reservation-next" type="button">Continue</button></footer>
+    <footer class="ui-dialog__footer reservation-dialog__footer"><button class="button button--secondary" id="reservation-save-draft" type="button">Save draft</button><button class="button button--secondary" id="reservation-back" type="button">Back</button><button class="button button--primary" id="reservation-next" type="button">Continue</button></footer>
   </form>
 </dialog>
 
@@ -83,4 +86,4 @@
   </form>
 </dialog>
 
-<div class="ui-toast" id="reservation-toast" role="status" aria-live="polite"></div><script type="module" src="./js/pages/reservations.js?v=14.1"></script></body></html>
+<div class="ui-toast" id="reservation-toast" role="status" aria-live="polite"></div><script type="module" src="./js/pages/reservations.js?v=20.1"></script></body></html>

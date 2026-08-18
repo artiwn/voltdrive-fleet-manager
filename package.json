@@ -1,0 +1,16 @@
+{
+  "name": "voltdrive-fleet-manager-prototype",
+  "private": true,
+  "version": "20.1.0",
+  "scripts": {
+    "smoke:data": "node scripts/data-model-smoke.mjs",
+    "smoke:access": "node scripts/access-scope-smoke.mjs",
+    "smoke:guards": "node scripts/page-guard-smoke.mjs",
+    "verify": "npm run smoke:data && npm run smoke:access && npm run smoke:guards && npm run smoke:planning && npm run smoke:compatibility && npm run smoke:context && npm run smoke:reports",
+    "smoke:planning": "node scripts/planning-reservations-smoke.mjs",
+    "smoke:compatibility": "node scripts/charging-compatibility-smoke.mjs",
+    "smoke:context": "node scripts/context-navigation-smoke.mjs",
+    "smoke:reports": "node scripts/reports-analytics-smoke.mjs"
+  },
+  "type": "module"
+}

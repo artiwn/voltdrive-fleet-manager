@@ -73,7 +73,7 @@
             <label class="form-field"><span>Driver</span><select class="ui-select" id="report-driver"><option value="all">All drivers</option></select></label>
             <label class="form-field"><span>Charger</span><select class="ui-select" id="report-charger"><option value="all">All chargers</option></select></label>
           </div>
-          <div class="reports-filter-meta"><span class="ui-pill status-pill status-active">Live prototype data</span><span id="report-filter-summary">All fleet data · Last 7 days</span></div>
+          <div class="reports-filter-meta"><span class="ui-pill status-pill status-active">Dated prototype records</span><span id="report-filter-summary">All fleet data · Last 7 days</span></div>
         </div>
       </section>
 
@@ -84,6 +84,8 @@
         <article class="kpi-card"><span>Readiness SLA</span><strong id="report-readiness">—</strong><small id="report-readiness-note">Departures meeting target</small></article>
         <article class="kpi-card"><span>Charger utilization</span><strong id="report-utilization">—</strong><small>Operational utilization</small></article>
         <article class="kpi-card"><span>Failed sessions</span><strong id="report-failure-rate">—</strong><small id="report-failure-note">Session failure rate</small></article>
+        <article class="kpi-card"><span>Parking-bay utilization</span><strong id="report-bay-utilization">—</strong><small id="report-bay-note">Dated bay occupancy</small></article>
+        <article class="kpi-card"><span>Reservation no-show</span><strong id="report-no-show-rate">—</strong><small id="report-no-show-note">No-show rate</small></article>
       </section>
 
       <section class="reports-command-grid">
@@ -103,6 +105,21 @@
         <section class="panel"><header class="panel__header"><div><h2>Fleet status mix</h2><p>Current vehicle operational state</p></div></header><div class="panel__body"><div class="report-status-grid report-status-grid--v2" id="report-status-grid"></div></div></section>
       </section>
 
+      <section class="reports-two-column reports-section">
+        <section class="panel"><header class="panel__header"><div><h2>Reservations</h2><p>Completed, cancelled, no-show and active reservations in the selected period</p></div><button class="action-button" type="button" onclick="location.href='./reservations.html'">Open reservations</button></header><div class="panel__body"><div class="report-status-grid report-status-grid--reservation" id="report-reservation-summary"></div></div></section>
+        <section class="panel"><header class="panel__header"><div><h2>Parking-bay utilization</h2><p>Independent bay occupancy and blocked time from dated utilization records</p></div><button class="action-button" type="button" onclick="location.href='./depot.html'">Open depot</button></header><div class="panel__body"><div class="fleet-table-wrap"><table class="fleet-table reports-bay-table"><thead><tr><th>Bay</th><th>Charger</th><th>Utilization</th><th>Used</th><th>Blocked</th></tr></thead><tbody id="report-bay-rows"></tbody></table></div></div></section>
+      </section>
+
+      <section class="reports-two-column reports-section">
+        <section class="panel"><header class="panel__header"><div><h2>Busy & inactive periods</h2><p>Charging-session starts by two-hour operating window</p></div></header><div class="panel__body"><div class="report-period-highlights"><div><span id="report-busy-period">Busiest: —</span></div><div><span id="report-inactive-period">Quietest: —</span></div></div><div class="metric-bars reports-metric-bars" id="report-activity-hours"></div></div></section>
+        <section class="panel"><header class="panel__header"><div><h2>Maintenance performance</h2><p>Ticket resolution, repair time and repeated charger failures</p></div><button class="action-button" type="button" onclick="location.href='./alerts.html'">Open alerts</button></header><div class="panel__body"><div class="report-maintenance-summary" id="report-maintenance-summary"></div><div class="report-home-list" id="report-maintenance-list"></div></div></section>
+      </section>
+
+      <section class="panel reports-section">
+        <header class="panel__header"><div><h2>Renewable energy & carbon</h2><p>Depot energy mix for the selected reporting window</p></div><span class="panel__meta">Site-level telemetry</span></header>
+        <div class="panel__body"><div class="report-sustainability-grid"><div><span>Renewable energy</span><strong id="report-renewable">—</strong></div><div><span>Grid energy</span><strong id="report-grid-energy">—</strong></div><div><span>Renewable share</span><strong id="report-renewable-share">—</strong></div><div><span>Carbon avoided</span><strong id="report-carbon">—</strong></div></div><div class="report-energy-mix"><span id="report-energy-mix-bar"></span></div><p class="reports-data-note" id="report-sustainability-note">—</p></div>
+      </section>
+
       <section class="panel reports-section">
         <header class="panel__header"><div><h2>Vehicle performance</h2><p>Energy, charging cost and readiness by vehicle</p></div><span class="panel__meta" id="vehicle-report-count">—</span></header>
         <div class="panel__body"><div class="fleet-table-wrap"><table class="fleet-table reports-vehicle-table"><thead><tr><th>Vehicle</th><th>Driver / Department</th><th>Sessions</th><th>Energy</th><th>Cost</th><th>SOC</th><th>Readiness</th><th>Status</th><th></th></tr></thead><tbody id="report-vehicle-rows"></tbody></table></div></div>
@@ -114,8 +131,8 @@
       </section>
 
       <section class="panel reports-section">
-        <header class="panel__header"><div><h2>Departure performance</h2><p>Scheduled departures, required SOC and readiness risks</p></div><button class="action-button" id="open-schedules" type="button">Open schedules</button></header>
-        <div class="panel__body"><div class="fleet-table-wrap"><table class="fleet-table"><thead><tr><th>Schedule</th><th>Vehicle</th><th>Driver</th><th>Route</th><th>Departure</th><th>Required SOC</th><th>Current SOC</th><th>Result</th></tr></thead><tbody id="report-schedule-rows"></tbody></table></div></div>
+        <header class="panel__header"><div><h2>Departure performance</h2><p>Dated departure outcomes, target SOC and readiness SLA</p></div><button class="action-button" id="open-schedules" type="button">Open schedules</button></header>
+        <div class="panel__body"><div class="fleet-table-wrap"><table class="fleet-table"><thead><tr><th>Date</th><th>Vehicle</th><th>Driver</th><th>Route</th><th>Departure</th><th>Target SOC</th><th>Actual SOC</th><th>Result</th></tr></thead><tbody id="report-schedule-rows"></tbody></table></div></div>
       </section>
     </main>
   </div>
@@ -129,6 +146,6 @@
 </aside>
 
 <div class="ui-toast" id="report-toast" role="status" aria-live="polite"></div>
-<script type="module" src="./js/pages/reports.js?v=14.1"></script>
+<script type="module" src="./js/pages/reports.js?v=20.1"></script>
 </body>
 </html>
