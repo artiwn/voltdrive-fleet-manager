@@ -1,7 +1,8 @@
-import {loadState,saveState} from '../core/fleet-state.js';
+import {loadState,saveState,departmentName} from '../core/fleet-state.js';
 import {initCommon} from '../layout/common.js';
 
-initCommon();
+const access=initCommon();
+if(!access.denied){
 let state=loadState();
 let activeClaimId=null;
 let reviewAction='approve';
@@ -23,10 +24,12 @@ const todayLabel=()=>new Intl.DateTimeFormat('en',{month:'short',day:'numeric'})
 
 function driverFor(claim){return state.drivers.find(x=>x.id===claim.driver)}
 function vehicleFor(claim){return state.vehicles.find(x=>x.id===claim.vehicle)}
-function departmentFor(claim){return driverFor(claim)?.department||'Unassigned'}
+function departmentIdFor(claim){return driverFor(claim)?.departmentId||null}
+function departmentFor(claim){const d=driverFor(claim);return d?departmentName(state,d.departmentId||d.department):'Unassigned'}
 function costCenterFor(claim){
+  const departmentId=departmentIdFor(claim);
   const dep=departmentFor(claim);
-  return state.billing?.costCenters?.find(x=>x.department===dep)?.name||`${dep} Fleet`;
+  return state.billing?.costCenters?.find(x=>x.departmentId===departmentId||(!x.departmentId&&x.department===dep))?.name||`${dep} Fleet`;
 }
 function reviewClass(status){return `status-${status||'pending'}`}
 function paymentClass(status){return status==='queued'?'status-queued-payment':`status-${status||'unpaid'}`}
@@ -55,16 +58,16 @@ function normalize(){
 
 function populateDepartments(){
   const current=els.department.value||'all';
-  const deps=[...new Set((state.drivers||[]).map(x=>x.department).filter(Boolean))].sort();
-  els.department.innerHTML='<option value="all">All departments</option>'+deps.map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join('');
+  const deps=[...new Set((state.drivers||[]).map(x=>x.departmentId).filter(Boolean))].sort((a,b)=>departmentName(state,a).localeCompare(departmentName(state,b)));
+  els.department.innerHTML='<option value="all">All departments</option>'+deps.map(id=>`<option value="${esc(id)}">${esc(departmentName(state,id))}</option>`).join('');
   els.department.value=deps.includes(current)?current:'all';
 }
 
 function filteredClaims(){
   const q=els.search.value.trim().toLowerCase();
   return (state.reimbursements||[]).filter(r=>{
-    const d=driverFor(r),v=vehicleFor(r),hay=[r.id,d?.name,r.vehicle,v?.name,v?.plate,r.date].join(' ').toLowerCase();
-    return (!q||hay.includes(q)) && (els.status.value==='all'||r.status===els.status.value) && (els.payment.value==='all'||r.paymentStatus===els.payment.value) && (els.department.value==='all'||d?.department===els.department.value);
+    const d=driverFor(r),v=vehicleFor(r),hay=[r.id,r.driver,d?.name,r.vehicle,v?.name,v?.plate,r.date].join(' ').toLowerCase();
+    return (!q||hay.includes(q)) && (els.status.value==='all'||r.status===els.status.value) && (els.payment.value==='all'||r.paymentStatus===els.payment.value) && (els.department.value==='all'||d?.departmentId===els.department.value);
   }).sort((a,b)=>String(b.date).localeCompare(String(a.date)));
 }
 
@@ -171,7 +174,7 @@ function createBatch(){
   rows.forEach(r=>{
     r.paymentStatus='queued';r.batchId=ref;
     const existing=(state.billing.transactions||[]).find(t=>t.reference===r.id&&t.type==='Home reimbursement');
-    const tx={id:existing?.id||`TX-HR-${Date.now()}-${r.id.slice(-2)}`,date:'Today',type:'Home reimbursement',reference:r.id,vehicle:r.vehicle,costCenter:costCenterFor(r),amount:r.amount,status:'pending',batchId:ref};
+    const tx={id:existing?.id||`TX-HR-${Date.now()}-${r.id.slice(-2)}`,date:'Today',type:'Home reimbursement',reference:r.id,vehicle:r.vehicle,depotId:r.depotId,costCenter:costCenterFor(r),amount:r.amount,status:'pending',batchId:ref};
     if(existing)Object.assign(existing,tx);else state.billing.transactions=[tx,...(state.billing.transactions||[])];
   });
   state.auditLog=[{id:`AUD-HOME-${Date.now()}`,time:'Today',user:state.company.manager,action:'Created home reimbursement batch',resource:ref,result:'success'},...(state.auditLog||[])];
@@ -195,4 +198,10 @@ function renderAll(){state=loadState();normalize();populateDepartments();renderK
 $('home-drawer-close')?.addEventListener('click',closeClaim);els.backdrop?.addEventListener('click',closeClaim);document.addEventListener('keydown',e=>{if(e.key==='Escape'&&els.drawer.classList.contains('is-open'))closeClaim()});
 els.reject?.addEventListener('click',()=>openReview('reject'));els.approve?.addEventListener('click',()=>{const r=state.reimbursements.find(x=>x.id===activeClaimId);if(r?.status==='approved'&&r.paymentStatus==='queued')openPaid();else openReview('approve')});
 els.reviewForm?.addEventListener('submit',e=>{if(e.submitter?.id==='home-review-confirm')submitReview()});$('create-batch')?.addEventListener('click',openBatch);els.batchForm?.addEventListener('submit',e=>{if(e.submitter?.id==='home-batch-confirm')createBatch()});els.paidForm?.addEventListener('submit',e=>{if(e.submitter?.id==='home-paid-confirm')markPaid()});$('export-home')?.addEventListener('click',exportCsv);
+const contextParams=new URLSearchParams(location.search);
+const requestedDriver=contextParams.get('driver');
+const requestedClaim=contextParams.get('claim');
+if(requestedDriver&&els.search){els.search.value=requestedDriver;}
 renderAll();
+if(requestedClaim)openClaim(requestedClaim);
+}

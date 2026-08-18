@@ -1,7 +1,8 @@
-import {loadState,saveState} from '../core/fleet-state.js';
+import {loadState,saveState,departmentName} from '../core/fleet-state.js';
 import {initCommon} from '../layout/common.js';
 
-initCommon();
+const access=initCommon();
+if(!access.denied){
 
 let state=loadState();
 let activeInvoiceId=null;
@@ -111,7 +112,7 @@ function renderAllocation(){
     <div class="kpi-card"><span>Allocated spend</span><strong>${money(total)}</strong><small>Across ${centers.length} cost centers</small></div>
     <div class="kpi-card"><span>Largest cost center</span><strong>${escapeHtml([...centers].sort((a,b)=>b.monthCost-a.monthCost)[0]?.name||'—')}</strong><small>${money(Math.max(0,...centers.map(x=>Number(x.monthCost||0))))}</small></div>
     <div class="kpi-card"><span>Mapped vehicles</span><strong>${centers.reduce((a,x)=>a+Number(x.vehicles||0),0)}</strong><small>Finance allocation enabled</small></div>`;
-  els.costCenterTable.innerHTML=centers.map(x=>{const share=total?Math.round(x.monthCost/total*100):0;return `<tr><td><strong>${escapeHtml(x.name)}</strong></td><td>${escapeHtml(x.department)}</td><td>${x.vehicles}</td><td><strong>${money(x.monthCost)}</strong></td><td><div class="billing-share"><div class="ui-progress"><span class="ui-progress__bar" style="width:${share}%"></span></div><strong>${share}%</strong></div></td></tr>`}).join('');
+  els.costCenterTable.innerHTML=centers.map(x=>{const share=total?Math.round(x.monthCost/total*100):0;return `<tr><td><strong>${escapeHtml(x.name)}</strong></td><td>${escapeHtml(departmentName(state,x.departmentId||x.department))}</td><td>${x.vehicles}</td><td><strong>${money(x.monthCost)}</strong></td><td><div class="billing-share"><div class="ui-progress"><span class="ui-progress__bar" style="width:${share}%"></span></div><strong>${share}%</strong></div></td></tr>`}).join('');
 }
 
 function invoiceBreakdown(i){return [
@@ -197,3 +198,4 @@ els.payForm?.addEventListener('submit',e=>{if(e.submitter?.id==='confirm-pay'&&p
 
 renderAll();
 const params=new URLSearchParams(location.search);if(params.get('invoice'))openInvoice(params.get('invoice'));
+}

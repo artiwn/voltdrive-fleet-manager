@@ -1,4 +1,4 @@
-import {loadState,getAccessContext,setCurrentAccessUserId} from '../core/fleet-state.js';
+import {loadState,getAccessContext,setCurrentAccessUserId,getPrototypeAccessDirectory} from '../core/fleet-state.js';
 
 const SIDEBAR_SCROLL_KEY='voltdrive_fleet_sidebar_scroll_v1';
 const SESSION_ACTIVITY_KEY='voltdrive_fleet_session_activity_v1';
@@ -13,15 +13,15 @@ const PAGE_RULES={
   'sessions.html':{nav:'sessions',view:['sessions.view','sessions.stop'],manage:'sessions.stop'},
   'reservations.html':{nav:'reservations',view:['reservations.view','reservations.manage'],manage:'reservations.manage'},
   'energy.html':{nav:'energy',view:['energy.view','energy.manage'],manage:'energy.manage'},
-  'billing.html':{nav:'billing',view:['billing.view','billing.manage'],manage:'billing.manage'},
-  'fleet-plan.html':{nav:'plan',view:['billing.view','billing.manage'],manage:'billing.manage'},
+  'billing.html':{nav:'billing',view:['billing.view','billing.manage'],manage:'billing.manage',scope:'all-depots'},
+  'fleet-plan.html':{nav:'plan',view:['billing.view','billing.manage'],manage:'billing.manage',scope:'all-depots'},
   'home-charging.html':{nav:'home-charging',view:['home.manage'],manage:'home.manage'},
   'reports.html':{nav:'reports',view:['reports.view']},
   'alerts.html':{nav:'alerts',view:['alerts.view','alerts.manage'],manage:'alerts.manage'},
-  'users.html':{nav:'users',view:['users.manage','audit.view'],manage:'users.manage'},
-  'fleet-settings.html':{nav:'settings',view:['settings.manage'],manage:'settings.manage'}
+  'users.html':{nav:'users',view:['users.view','users.manage','roles.view','roles.manage','audit.view']},
+  'fleet-settings.html':{nav:'settings',view:['settings.manage'],manage:'settings.manage',scope:'all-depots'}
 };
-const NAV_RULES=Object.fromEntries(Object.values(PAGE_RULES).map(rule=>[rule.nav,rule.view]));
+const NAV_RULES=Object.fromEntries(Object.values(PAGE_RULES).map(rule=>[rule.nav,rule]));
 
 const ACTION_RULES={
   vehicles:{permission:'vehicles.manage',selectors:['#simulate-button','#add-vehicle','#drawer-edit','#drawer-driver','#vehicle-save','#driver-dialog button.button--primary']},
@@ -35,7 +35,7 @@ const ACTION_RULES={
   plan:{permission:'billing.manage',selectors:['#add-capacity','#manage-plan','#confirm-plan-change','#confirm-capacity','[data-select-plan]']},
   'home-charging':{permission:'home.manage',selectors:['#create-batch','#home-reject','#home-approve','#home-review-confirm','#home-batch-confirm','#home-paid-confirm']},
   alerts:{permission:'alerts.manage',selectors:['#acknowledge-all','#resolve-info','#alert-manage','#alert-acknowledge','#alert-resolve','#alert-manage-save','#alert-resolve-save','[data-ack]','[data-resolve]','[data-reopen]','#create-maintenance-ticket','#alert-comment-form textarea','#alert-comment-form button']},
-  users:{permission:'users.manage',selectors:['#invite-user','#admin-edit-user','#admin-toggle-user','#role-edit','#user-save','#role-save']},
+  users:[{permission:'users.manage',selectors:['#invite-user','#admin-edit-user','#admin-toggle-user','#user-save']},{permission:'roles.manage',selectors:['#role-edit','#role-save']},{permission:'audit.export',selectors:['#audit-export']}],
   settings:{permission:'settings.manage',selectors:['#test-erp','#reset-settings','.settings-tab-panel input','.settings-tab-panel select','.settings-tab-panel textarea']}
 };
 
@@ -54,12 +54,14 @@ function initSidebarScroll(sidebar){
 
 function pageName(){return location.pathname.split('/').pop()||'dashboard.html';}
 function canAny(access,permissions=[]){return permissions.some(permission=>access.can(permission));}
+function ruleAllowed(access,rule){return Boolean(rule&&canAny(access,rule.view)&&(rule.scope!=='all-depots'||access.allDepots));}
 function currentRule(){return PAGE_RULES[pageName()]||null;}
+function actionGroups(rule){const action=rule&&ACTION_RULES[rule.nav];return !action?[]:(Array.isArray(action)?action:[action]);}
 
 function applyNavigation(access){
   document.querySelectorAll('.nav-link[data-nav]').forEach(link=>{
-    const rules=NAV_RULES[link.dataset.nav];
-    const allowed=!rules||canAny(access,rules);
+    const rule=NAV_RULES[link.dataset.nav];
+    const allowed=!rule||ruleAllowed(access,rule);
     link.hidden=!allowed;
     link.setAttribute('aria-hidden',String(!allowed));
   });
@@ -72,7 +74,7 @@ function applyNavigation(access){
     let target;
     try{target=new URL(link.href,location.href).pathname.split('/').pop();}catch{return;}
     const rule=PAGE_RULES[target];
-    if(!rule||canAny(access,rule.view))return;
+    if(!rule||ruleAllowed(access,rule))return;
     link.dataset.accessRestricted='true';
     link.setAttribute('aria-disabled','true');
     link.title='Your current role does not have access to this section.';
@@ -98,13 +100,15 @@ function renderAccessIdentity(state,access){
 function installPrototypeUserSwitcher(state,access){
   const footer=document.querySelector('.sidebar__footer');
   if(!footer||footer.querySelector('.access-preview'))return;
-  const active=(state.users||[]).filter(user=>user.status==='active');
+  const directory=getPrototypeAccessDirectory();
+  const active=directory.users||[];
+  if(!active.length)return;
   const wrap=document.createElement('div');
   wrap.className='access-preview';
   wrap.innerHTML=`<label><span>Prototype access</span><select class="access-preview__select" aria-label="Preview portal as another user">${active.map(user=>{
-    const role=(state.roles||[]).find(item=>item.id===user.role);
+    const role=(directory.roles||[]).find(item=>item.id===user.role);
     return `<option value="${user.id}" ${user.id===access.user?.id?'selected':''}>${user.name} · ${role?.name||'No role'}</option>`;
-  }).join('')}</select></label><small>${access.scope==='All depots'?'All depots':access.scope}</small>`;
+  }).join('')}</select></label><small>Prototype only · ${active.length} active users · current scope: ${access.scope||'No depot scope'}</small>`;
   footer.appendChild(wrap);
   wrap.querySelector('select')?.addEventListener('change',event=>{
     setCurrentAccessUserId(event.target.value);
@@ -124,18 +128,15 @@ function restrictElement(element,permission){
   if(element.matches('a'))element.setAttribute('aria-disabled','true');
 }
 function applyActionRules(access,securityCompliant=true){
-  const rule=currentRule();
-  if(!rule)return;
-  const action=ACTION_RULES[rule.nav];
-  if(!action||(access.can(action.permission)&&securityCompliant))return;
-  action.selectors.forEach(selector=>{
-    document.querySelectorAll(selector).forEach(element=>restrictElement(element,action.permission));
+  const groups=actionGroups(currentRule());
+  groups.forEach(action=>{
+    if(access.can(action.permission)&&securityCompliant)return;
+    action.selectors.forEach(selector=>{document.querySelectorAll(selector).forEach(element=>restrictElement(element,action.permission));});
   });
 }
 function installMutationPermissionObserver(access,securityCompliant=true){
-  const rule=currentRule();
-  const action=rule&&ACTION_RULES[rule.nav];
-  if(!action||(access.can(action.permission)&&securityCompliant))return;
+  const groups=actionGroups(currentRule());
+  if(!groups.some(action=>!(access.can(action.permission)&&securityCompliant)))return;
   const observer=new MutationObserver(()=>applyActionRules(access,securityCompliant));
   observer.observe(document.body,{childList:true,subtree:true});
 }
@@ -188,24 +189,24 @@ function showReadOnlyBanner(access,rule){
   main.prepend(banner);
 }
 function showAccessDenied(access,rule){
-  if(!rule||canAny(access,rule.view))return false;
+  if(!rule||ruleAllowed(access,rule))return false;
   document.body.classList.add('is-access-denied');
   const appMain=document.querySelector('.app-main');
   if(!appMain)return true;
   const screen=document.createElement('section');
   screen.className='access-denied-screen';
-  screen.innerHTML=`<div class="access-denied-card"><span class="access-denied-card__icon">⊘</span><span class="eyebrow">ACCESS CONTROL</span><h1>Access restricted</h1><p><strong>${access.role?.name||'Current role'}</strong> does not have permission to open this section.</p><div class="ui-detail-grid"><div><span>Signed in as</span><strong>${access.user?.name||'Unknown user'}</strong></div><div><span>Fleet scope</span><strong>${access.scope||'All depots'}</strong></div></div><a class="button button--primary" href="./dashboard.html">Return to dashboard</a></div>`;
+  screen.innerHTML=`<div class="access-denied-card"><span class="access-denied-card__icon">⊘</span><span class="eyebrow">ACCESS CONTROL</span><h1>Access restricted</h1><p><strong>${access.role?.name||'Current role'}</strong> does not have permission or fleet scope to open this section.</p><div class="ui-detail-grid"><div><span>Signed in as</span><strong>${access.user?.name||'Unknown user'}</strong></div><div><span>Fleet scope</span><strong>${access.scope||'All depots'}</strong></div></div><a class="button button--primary" href="./dashboard.html">Return to dashboard</a></div>`;
   appMain.appendChild(screen);
   return true;
 }
 
 function installAccessEventGuard(access,securityCompliant=true){
-  const rule=currentRule();
-  const action=rule&&ACTION_RULES[rule.nav];
+  const groups=actionGroups(currentRule());
   const isActionRestricted=target=>{
-    if(!target||!action||(access.can(action.permission)&&securityCompliant))return false;
-    return action.selectors.some(selector=>{
-      try{return Boolean(target.closest(selector));}catch{return false;}
+    if(!target)return false;
+    return groups.some(action=>{
+      if(access.can(action.permission)&&securityCompliant)return false;
+      return action.selectors.some(selector=>{try{return Boolean(target.closest(selector));}catch{return false;}});
     });
   };
   document.addEventListener('click',event=>{

@@ -1,7 +1,8 @@
 import {loadState,saveState} from '../core/fleet-state.js';
 import {initCommon} from '../layout/common.js';
 
-initCommon();
+const access=initCommon();
+if(!access.denied){
 
 let state=loadState();
 let toastTimer=null;
@@ -90,3 +91,4 @@ $('manage-plan')?.addEventListener('click',()=>openManagePlan());$('add-capacity
 $('manage-plan-form')?.addEventListener('submit',e=>{if(e.submitter?.id==='confirm-plan-change')applyPlanChange();});$('capacity-form')?.addEventListener('submit',e=>{if(e.submitter?.id==='confirm-capacity')addCapacity();});
 
 renderAll();
+}

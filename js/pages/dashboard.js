@@ -1,8 +1,9 @@
-import {loadState,statusLabel} from '../core/fleet-state.js';
+import {loadState,statusLabel,routeName,parkingBayCode} from '../core/fleet-state.js';
 import {initCommon} from '../layout/common.js';
 
 const s=loadState();
-initCommon();
+const access=initCommon();
+if(!access.denied){
 
 const charging=s.vehicles.filter(v=>v.status==='charging').length;
 const ready=s.vehicles.filter(v=>v.status==='ready').length;
@@ -40,7 +41,7 @@ const st=v=>`<span class="ui-pill status-pill status-${v.status}">${statusLabel(
 
 document.getElementById('next-departures').innerHTML=orderedVehicles.slice(0,4).map((v,index)=>{
   const tone=v.status==='risk'?'danger':v.status==='ready'?'success':v.status==='charging'?'info':'neutral';
-  return `<div class="departure-row departure-row--${tone}"><div class="departure-time"><span>${v.departure}</span><small>#${index+1}</small></div><div class="departure-vehicle"><strong>${v.name}</strong><span>${v.route} · ${v.battery}% battery</span></div><div class="departure-status">${st(v)}<small>${v.requiredKwh} kWh needed</small></div></div>`;
+  return `<div class="departure-row departure-row--${tone}"><div class="departure-time"><span>${v.departure}</span><small>#${index+1}</small></div><div class="departure-vehicle"><strong>${v.name}</strong><span>${routeName(s,v.routeId||v.route)} · ${v.battery}% battery</span></div><div class="departure-status">${st(v)}<small>${v.requiredKwh} kWh needed</small></div></div>`;
 }).join('');
 
 const pct=Math.round(s.energy.currentKw/s.energy.capacityKw*100);
@@ -53,9 +54,9 @@ document.getElementById('energy-snapshot').innerHTML=`
   <div class="energy-stat"><span>Avg. active charger</span><strong>${avgActivePower} kW</strong><small>${charging} vehicles charging</small></div>
   <div class="energy-stat"><span>Energy price</span><strong>${s.energy.priceAmd} AMD</strong><small>per kWh now</small></div>`;
 
-document.getElementById('readiness-table').innerHTML=orderedVehicles.slice(0,7).map(v=>`<tr class="${v.status==='risk'?'row-risk':''}"><td><div class="entity-main"><strong>${v.name}</strong><span>${v.plate} · ${v.route}</span></div></td><td><strong>${v.departure}</strong></td><td><div class="battery-cell"><span>${v.battery}% → ${v.target}%</span><div class="mini-progress"><i style="width:${Math.min(100,v.battery)}%"></i></div></div></td><td>${v.requiredKwh} kWh</td><td>${st(v)}</td><td>${v.charger}</td><td>${pr(v)}</td></tr>`).join('');
+document.getElementById('readiness-table').innerHTML=orderedVehicles.slice(0,7).map(v=>`<tr class="${v.status==='risk'?'row-risk':''}"><td><div class="entity-main"><strong>${v.name}</strong><span>${v.plate} · ${routeName(s,v.routeId||v.route)}</span></div></td><td><strong>${v.departure}</strong></td><td><div class="battery-cell"><span>${v.battery}% → ${v.target}%</span><div class="mini-progress"><i style="width:${Math.min(100,v.battery)}%"></i></div></div></td><td>${v.requiredKwh} kWh</td><td>${st(v)}</td><td>${v.charger}</td><td>${pr(v)}</td></tr>`).join('');
 
-document.getElementById('assignment-table').innerHTML=s.chargers.filter(c=>c.vehicle).map(c=>{const v=s.vehicles.find(v=>v.id===c.vehicle);return `<tr><td><div class="entity-main"><strong>${c.id}</strong><span>${c.type} · ${c.power} kW max</span></div></td><td>${v?.name||c.vehicle}</td><td><strong>${v?.power||0} kW</strong></td><td>${c.bay}</td><td><span class="health-text ${c.health<90?'health-text--warn':''}">${c.health}%</span></td><td><span class="ui-pill status-pill status-${c.status}">${statusLabel(c.status)}</span></td></tr>`}).join('');
+document.getElementById('assignment-table').innerHTML=s.chargers.filter(c=>c.vehicle).map(c=>{const v=s.vehicles.find(v=>v.id===c.vehicle);return `<tr><td><div class="entity-main"><strong>${c.id}</strong><span>${c.type} · ${c.power} kW max</span></div></td><td>${v?.name||c.vehicle}</td><td><strong>${v?.power||0} kW</strong></td><td>${parkingBayCode(s,c.parkingBayId||c.bay)}</td><td><span class="health-text ${c.health<90?'health-text--warn':''}">${c.health}%</span></td><td><span class="ui-pill status-pill status-${c.status}">${statusLabel(c.status)}</span></td></tr>`}).join('');
 
 document.getElementById('load-value').textContent=`${s.energy.currentKw} kW`;
 document.getElementById('load-percent').textContent=`${pct}%`;
@@ -73,3 +74,4 @@ document.getElementById('power-allocation').innerHTML=chargingVehicles.map(v=>{
 }).join('') || '<div class="empty-state">No active charging sessions.</div>';
 
 document.getElementById('dashboard-alerts').innerHTML=s.alerts.filter(a=>a.status==='open').slice(0,4).map(a=>`<div class="alert-item"><div class="alert-item__top"><strong><span class="severity-dot sev-${a.severity}"></span>${a.title}</strong><small>${a.time}</small></div><p>${a.body}</p></div>`).join('');
+}

@@ -1,7 +1,8 @@
 import {loadState,saveState} from '../core/fleet-state.js';
 import {initCommon} from '../layout/common.js';
 
-initCommon();
+const access=initCommon();
+if(!access.denied){
 let state=loadState();
 let activeAlertId=null;
 
@@ -303,3 +304,4 @@ $('alert-resolve-form').addEventListener('submit',event=>{if(event.submitter?.va
 
 render();
 const requestedAlert=new URLSearchParams(location.search).get('alert');if(requestedAlert&&state.alerts.some(alert=>alert.id===requestedAlert))openDrawer(requestedAlert);
+}

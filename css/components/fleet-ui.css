@@ -564,3 +564,10 @@ button[data-access-restricted="true"],input[data-access-restricted="true"],selec
 .session-timeout-card{width:min(440px,100%);padding:28px;border:1px solid var(--color-border);border-radius:20px;background:var(--color-bg-elevated);box-shadow:0 24px 80px rgba(0,0,0,.48);}
 .session-timeout-card h2{margin:8px 0 10px;}
 .session-timeout-card p{margin:0 0 22px;color:var(--color-text-secondary);line-height:1.55;}
+
+.ui-callout--success{border-color:rgba(50,213,131,.24);background:rgba(50,213,131,.07)}
+.ui-callout--success strong{color:#7fe5ad}
+
+
+.ui-inline-actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.ui-inline-actions .button{min-height:36px;padding:0 12px;border-radius:10px;font-size:12px;text-decoration:none;white-space:nowrap}

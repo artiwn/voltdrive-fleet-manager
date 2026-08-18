@@ -166,7 +166,8 @@
 .reservation-table{min-width:1240px}
 .reservation-row{transition:background .15s ease}
 .reservation-row:hover{background:rgba(255,255,255,.025)}
-.reservation-row--cancelled{opacity:.64}
+.reservation-row--cancelled,.reservation-row--expired{opacity:.64}
+.reservation-row--no-show{background:rgba(255,69,58,.035)}
 .reservation-id span{margin-top:4px}
 .reservation-assignment{display:flex;align-items:center;gap:10px;min-width:220px}
 .reservation-assignment__icon{display:inline-flex;align-items:center;justify-content:center;flex:0 0 32px;width:32px;height:32px;border:1px solid var(--color-border);border-radius:10px;background:#25252b;color:#9bbcff;font-size:14px;line-height:1}
@@ -439,3 +440,34 @@
 .alert-context-grid{grid-template-columns:repeat(4,1fr)}
 @media(max-width:980px){.alert-command-strip{grid-template-columns:repeat(2,1fr)}.alert-context-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:620px){.alert-command-strip,.alert-context-grid{grid-template-columns:1fr}.alert-timeline__item{grid-template-columns:18px 58px 1fr}.alert-detail-drawer{width:100vw}}
+
+/* Canonical Fleet Structure */
+.fleet-structure-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.structure-create-form{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(120px,1fr) auto;gap:10px;align-items:end;margin-bottom:16px}
+.structure-create-form--route{grid-template-columns:minmax(0,1.4fr) minmax(150px,1fr) 90px 100px auto}
+.structure-create-form input,.structure-create-form select{min-width:0}
+.structure-master-list{display:grid;gap:8px;max-height:310px;overflow:auto;padding-right:3px}
+.structure-master-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;padding:11px 12px;border:1px solid var(--color-border);border-radius:12px;background:var(--color-surface-secondary)}
+.structure-master-row strong,.structure-master-row span{display:block}.structure-master-row span{margin-top:3px;color:var(--color-text-secondary);font-size:12px}.structure-master-row__meta{text-align:right}.structure-master-row__meta strong{font-size:12px}.fleet-structure-note{margin-top:18px}
+@media(max-width:1100px){.fleet-structure-grid{grid-template-columns:1fr}.structure-create-form--route{grid-template-columns:repeat(2,minmax(0,1fr));}.structure-create-form--route .button{grid-column:1/-1}}
+@media(max-width:720px){.structure-create-form,.structure-create-form--route{grid-template-columns:1fr}.structure-create-form--route .button{grid-column:auto}}
+/* Reports v20: dated history, reservations, bay utilization, maintenance and sustainability */
+.reports-page .reports-kpi-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+.report-status-grid--reservation{grid-template-columns:repeat(3,1fr)}
+.report-status-grid--reservation .report-status-card--info{box-shadow:inset 3px 0 0 var(--fleet-info)}
+.report-status-grid--reservation .report-status-card--planned{box-shadow:inset 3px 0 0 #777}
+.reports-bay-table{min-width:650px}
+.report-period-highlights{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+.report-period-highlights>div{padding:12px;border:1px solid var(--color-border);border-radius:12px;background:var(--color-surface-secondary)}
+.report-period-highlights span{font-size:10px;font-weight:800;color:var(--color-text-secondary)}
+.report-maintenance-summary{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-bottom:15px}
+.report-maintenance-summary>div,.report-sustainability-grid>div{padding:13px;border:1px solid var(--color-border);border-radius:12px;background:var(--color-surface-secondary)}
+.report-maintenance-summary span,.report-maintenance-summary strong,.report-sustainability-grid span,.report-sustainability-grid strong{display:block}
+.report-maintenance-summary span,.report-sustainability-grid span{font-size:9px;color:var(--color-text-secondary)}
+.report-maintenance-summary strong,.report-sustainability-grid strong{margin-top:6px;font-size:16px}
+.report-sustainability-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.report-energy-mix{height:9px;margin:16px 0 10px;border-radius:999px;background:rgba(255,255,255,.07);overflow:hidden}
+.report-energy-mix>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--fleet-success),#65e3aa);border-radius:inherit;transition:width .2s ease}
+.reports-data-note{margin:0;color:var(--color-text-secondary);font-size:9px;line-height:1.5}
+@media(max-width:1050px){.reports-page .reports-kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.report-sustainability-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:620px){.reports-page .reports-kpi-grid,.report-status-grid--reservation,.report-period-highlights,.report-maintenance-summary,.report-sustainability-grid{grid-template-columns:1fr}}

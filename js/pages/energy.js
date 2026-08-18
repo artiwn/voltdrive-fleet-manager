@@ -1,7 +1,8 @@
-import {loadState, saveState} from '../core/fleet-state.js';
+import {loadState, saveState, routeName} from '../core/fleet-state.js';
 import {initCommon} from '../layout/common.js';
 
-initCommon();
+const access=initCommon();
+if(!access.denied){
 
 const state = loadState();
 const $ = id => document.getElementById(id);
@@ -142,7 +143,7 @@ function renderAllocation(){
       <td><div class="energy-soc-inline"><strong>${v.battery}% → ${v.target}%</strong><span>${fmt(v.requiredKwh)} kWh required</span></div></td>
       <td><div class="energy-power-cell"><div><strong>${fmt(v.power)} kW</strong><span>${p}% of charger</span></div><div class="energy-power-track"><i style="width:${p}%"></i></div></div></td>
       <td>${max} kW</td>
-      <td><div class="entity-main"><strong>${v.departure}</strong><span>${v.route}</span></div></td>
+      <td><div class="entity-main"><strong>${v.departure}</strong><span>${routeName(state,v.routeId||v.route)}</span></div></td>
       <td><button class="action-button" data-adjust-power="${v.id}" type="button">Adjust</button></td>
     </tr>`;
   }).join('') || '<tr><td colspan="8"><div class="empty-state">No vehicles are currently drawing charging power.</div></td></tr>';
@@ -250,11 +251,11 @@ function openVehicleDrawer(id){
   const max = Number(charger.power || 150);
   const limit = effectiveLimit();
   $('energy-drawer-title').textContent = `${v.id} · ${v.name}`;
-  $('energy-drawer-subtitle').textContent = `${charger.id} · ${v.route}`;
+  $('energy-drawer-subtitle').textContent = `${charger.id} · ${routeName(state,v.routeId||v.route)}`;
   $('energy-view-vehicle').href = `./vehicles.html?vehicle=${encodeURIComponent(v.id)}`;
   $('energy-drawer-body').innerHTML = `
     <div class="energy-allocation-hero"><div><span>Allocated charging power</span><strong>${fmt(v.power)} kW</strong><small>${Math.round(v.power/max*100)}% of ${fmt(max)} kW charger limit</small></div><div><span>SOC</span><strong>${v.battery}% → ${v.target}%</strong><small>${fmt(v.requiredKwh)} kWh required</small></div></div>
-    <section class="ui-detail-section"><h3>Operational context</h3><div class="ui-detail-grid"><div><span>Priority</span><strong><span class="ui-pill priority-pill priority-${v.priority}">${v.priority}</span></strong></div><div><span>Departure</span><strong>${v.departure}</strong></div><div><span>Route</span><strong>${v.route}</strong></div><div><span>Charger</span><strong>${charger.id} · ${charger.type}</strong></div></div></section>
+    <section class="ui-detail-section"><h3>Operational context</h3><div class="ui-detail-grid"><div><span>Priority</span><strong><span class="ui-pill priority-pill priority-${v.priority}">${v.priority}</span></strong></div><div><span>Departure</span><strong>${v.departure}</strong></div><div><span>Route</span><strong>${routeName(state,v.routeId||v.route)}</strong></div><div><span>Charger</span><strong>${charger.id} · ${charger.type}</strong></div></div></section>
     <section class="ui-detail-section"><h3>Power constraints</h3><div class="ui-detail-list"><div><span>Charger maximum</span><strong>${fmt(max)} kW</strong></div><div><span>Depot controlled limit</span><strong>${fmt(limit)} kW</strong></div><div><span>Current site load</span><strong>${fmt(currentSiteLoad())} kW</strong></div><div><span>Safety reserve</span><strong>${fmt(state.energy.reserveKw)} kW</strong></div></div></section>
     <section class="ui-detail-section"><div class="ui-callout ${v.status==='risk'?'ui-callout--danger':'ui-callout--info'}"><strong>${v.status==='risk'?'Readiness risk':'Allocation status'}</strong><span>${v.status==='risk'?'This vehicle is marked at risk. Increasing its allocation may improve departure readiness.':'Power can be adjusted manually or optimized with Rebalance power.'}</span></div></section>`;
   const backdrop = $('energy-drawer-backdrop');
@@ -412,3 +413,4 @@ $('power-form').addEventListener('submit',e=>{
 
 ensureEnergyState();
 render();
+}

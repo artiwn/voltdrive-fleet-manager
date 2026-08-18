@@ -1,7 +1,9 @@
 import {loadState,saveState} from '../core/fleet-state.js';
 import {initCommon} from '../layout/common.js';
+import {sessionContext,contextUrl} from '../core/context-navigation.js';
 
-initCommon();
+const access=initCommon();
+if(!access.denied){
 
 let state=loadState();
 let currentFilter='all';
@@ -125,6 +127,7 @@ function openDrawer(id){
   const raw=(state.sessions||[]).find(x=>x.id===id);
   if(!raw)return;
   const session=normalizeSession(raw),vehicle=vehicleFor(session),driver=driverFor(session);
+  const ctx=sessionContext({...state,sessions:(state.sessions||[]).map(normalizeSession)},id);
   activeSessionId=id;
   els.drawerTitle.textContent=session.id;
   els.drawerSubtitle.textContent=`${session.vehicle} · ${session.charger} · ${session.connector}`;
@@ -139,7 +142,8 @@ function openDrawer(id){
     <section class="ui-detail-section"><div class="session-section-head"><div><h3>Charging curve</h3><span>Power delivered during the session</span></div><strong>${session.curve.length} samples</strong></div><div class="session-chart">${curveSvg(session.curve)}</div></section>
     <section class="ui-detail-section"><h3>Billing</h3><div class="ui-detail-grid"><div><span>Session cost</span><strong>${money(session.cost)}</strong></div><div><span>Payment status</span><strong><span class="ui-pill status-pill status-${paymentClass(session.payment)}">${paymentLabel(session.payment)}</span></strong></div><div><span>Applied tariff</span><strong>${session.tariff} AMD / kWh</strong></div><div><span>Billing source</span><strong>Corporate fleet account</strong></div></div></section>
     <section class="ui-detail-section"><h3>Completion & diagnostics</h3><div class="ui-detail-list"><div><span>Stop reason</span><strong>${escapeHtml(session.stopReason)}</strong></div><div><span>Error</span><strong class="${session.error?'text-danger':''}">${session.error?escapeHtml(session.error):'No errors recorded'}</strong></div></div></section>
-    <section class="ui-detail-section"><div class="session-section-head"><div><h3>Event log</h3><span>Operational history for this session</span></div></div>${eventTimeline(session)}</section>`;
+    <section class="ui-detail-section"><div class="session-section-head"><div><h3>Event log</h3><span>Operational history for this session</span></div></div>${eventTimeline(session)}</section>
+    <section class="ui-detail-section"><h3>Related records</h3><div class="ui-inline-actions">${ctx.driver?`<a class="button button--secondary" href="${contextUrl('drivers.html',{driver:ctx.driver.id})}">Driver</a>`:''}${ctx.schedule?`<a class="button button--secondary" href="${contextUrl('schedules.html',{schedule:ctx.schedule.id})}">Schedule</a>`:''}${ctx.reservation?`<a class="button button--secondary" href="${contextUrl('reservations.html',{reservation:ctx.reservation.id})}">Reservation</a>`:''}<a class="button button--secondary" href="${contextUrl('operations.html',{vehicle:session.vehicle})}">Operations</a></div></section>`;
 
   els.primary.hidden=false;
   if(session.status==='active'){els.primary.textContent='Stop session';els.primary.dataset.action='stop';}
@@ -216,8 +220,8 @@ document.querySelectorAll('[data-session-filter]').forEach(btn=>btn.addEventList
 }));
 $('session-drawer-close')?.addEventListener('click',closeDrawer);
 els.backdrop?.addEventListener('click',closeDrawer);
-$('session-open-vehicle')?.addEventListener('click',()=>{const raw=(state.sessions||[]).find(x=>x.id===activeSessionId);if(raw)location.href=`./vehicles.html?vehicle=${encodeURIComponent(raw.vehicle)}`;});
-$('session-open-charger')?.addEventListener('click',()=>{const raw=(state.sessions||[]).find(x=>x.id===activeSessionId);if(raw)location.href=`./depot.html?charger=${encodeURIComponent(raw.charger)}`;});
+$('session-open-vehicle')?.addEventListener('click',()=>{const raw=(state.sessions||[]).find(x=>x.id===activeSessionId);if(raw)location.href=contextUrl('vehicles.html',{vehicle:raw.vehicle});});
+$('session-open-charger')?.addEventListener('click',()=>{const raw=(state.sessions||[]).find(x=>x.id===activeSessionId);if(raw)location.href=contextUrl('depot.html',{charger:raw.charger});});
 els.primary?.addEventListener('click',()=>{
   const action=els.primary.dataset.action;
   if(action==='stop')openStopDialog();else if(action==='receipt')downloadReceipt();else if(action==='alerts'){
@@ -230,7 +234,10 @@ els.stopForm?.addEventListener('submit',e=>{if(e.submitter?.id==='confirm-sessio
 
 const params=new URLSearchParams(location.search);
 const vehicleParam=params.get('vehicle');
+const chargerParam=params.get('charger');
 const sessionParam=params.get('session');
 if(vehicleParam&&els.search)els.search.value=vehicleParam;
+else if(chargerParam&&els.search)els.search.value=chargerParam;
 render();
 if(sessionParam)openDrawer(sessionParam);
+}

@@ -1,7 +1,10 @@
-import {loadState,saveState,statusLabel} from '../core/fleet-state.js';
+import {loadState,saveState,statusLabel,departmentName,routeName,parkingBayCode} from '../core/fleet-state.js';
 import {initCommon} from '../layout/common.js';
+import {compatibleChargersForVehicle,bestCompatibleConnector,deliverablePowerKw,compatibilitySummary,connectorLabelList} from '../core/charging-compatibility.js';
+import {vehicleContext,contextUrl} from '../core/context-navigation.js';
 
-initCommon();
+const access=initCommon();
+if(!access.denied){
 let state=loadState();
 let selectedVehicleId=null;
 let pendingAction=null;
@@ -21,6 +24,8 @@ function driverFor(vehicleId){return state.drivers.find(d=>d.vehicle===vehicleId
 function scheduleFor(vehicleId){return state.schedules.find(s=>s.vehicle===vehicleId);}
 function sessionFor(vehicleId){return state.sessions.find(s=>s.vehicle===vehicleId&&s.status==='active');}
 function chargerFor(id){return state.chargers.find(c=>c.id===id);}
+function driverDepartment(d){return departmentName(state,d?.departmentId||d?.department);}
+function vehicleRoute(v){return routeName(state,v?.routeId||v?.route);}
 function minutes(hhmm){const [h,m]=hhmm.split(':').map(Number);return h*60+m;}
 function formatMinutes(total){total=((total%1440)+1440)%1440;return `${String(Math.floor(total/60)).padStart(2,'0')}:${String(total%60).padStart(2,'0')}`;}
 function energyNeeded(v){return Math.max(0,Number(v.requiredKwh)||0);}
@@ -55,15 +60,15 @@ function renderStats(){
 }
 function populateGroups(){
  const current=groupFilter.value||'all';
- const groups=[...new Set(state.drivers.map(d=>d.department).filter(Boolean))].sort();
- groupFilter.innerHTML='<option value="all">All groups</option>'+groups.map(g=>`<option value="${esc(g)}">${esc(g)}</option>`).join('');
+ const groups=[...new Set(state.drivers.map(d=>d.departmentId).filter(Boolean))].sort((a,b)=>driverDepartment({departmentId:a}).localeCompare(driverDepartment({departmentId:b})));
+ groupFilter.innerHTML='<option value="all">All groups</option>'+groups.map(id=>`<option value="${esc(id)}">${esc(driverDepartment({departmentId:id}))}</option>`).join('');
  if(groups.includes(current)) groupFilter.value=current;
 }
 function filteredVehicles(){
  const q=search.value.trim().toLowerCase();
  let rows=state.vehicles.filter(v=>{
-  const d=driverFor(v); const hay=[v.id,v.name,v.plate,v.route,v.charger,d?.name,d?.department].join(' ').toLowerCase();
-  return (!q||hay.includes(q))&&(statusFilter.value==='all'||v.status===statusFilter.value)&&(groupFilter.value==='all'||d?.department===groupFilter.value);
+  const d=driverFor(v); const hay=[v.id,v.name,v.plate,vehicleRoute(v),v.charger,d?.name,driverDepartment(d)].join(' ').toLowerCase();
+  return (!q||hay.includes(q))&&(statusFilter.value==='all'||v.status===statusFilter.value)&&(groupFilter.value==='all'||d?.departmentId===groupFilter.value);
  });
  switch(sortFilter.value){
   case 'risk': rows.sort((a,b)=>(a.status==='risk'?-1:0)-(b.status==='risk'?-1:0)||minutes(a.departure)-minutes(b.departure)); break;
@@ -81,7 +86,7 @@ function renderTable(){
   const d=driverFor(v), eta=estimate(v), reason=riskReason(v), socPct=Math.min(100,Math.round(v.battery/v.target*100));
   return `<tr class="ops-vehicle-row ${v.status==='risk'?'ops-vehicle-row--risk':''}" data-open-vehicle="${v.id}">
    <td><div class="ops-vehicle-cell"><div class="ops-vehicle-id"><strong>${esc(v.id)}</strong><span>${esc(v.name)}</span></div><small>${esc(d?.name||'Unassigned driver')} · ${esc(v.plate)}</small></div></td>
-   <td><div class="ops-route-cell"><strong>${esc(v.route)}</strong><span>${esc(v.departure)} departure</span></div></td>
+   <td><div class="ops-route-cell"><strong>${esc(vehicleRoute(v))}</strong><span>${esc(v.departure)} departure</span></div></td>
    <td><div class="ops-soc"><div><strong>${v.battery}%</strong><span>→ ${v.target}%</span></div><div class="ops-soc__track"><span style="width:${socPct}%"></span></div></div></td>
    <td><div class="ops-eta ${eta.late?'ops-eta--danger':''}"><strong>${esc(eta.label)}</strong>${reason?`<span>${esc(reason)}</span>`:`<span>${eta.minutes===0?'Target reached':`${eta.minutes} min estimated`}</span>`}</div></td>
    <td><strong>${esc(v.charger||'—')}</strong>${v.charger!=='—'&&chargerFor(v.charger)?`<span>${chargerFor(v.charger).power} kW unit</span>`:'<span>Not assigned</span>'}</td>
@@ -112,14 +117,15 @@ function showToast(message){const t=$('ops-toast');t.textContent=message;t.class
 
 function renderDrawer(id){
  const v=state.vehicles.find(x=>x.id===id); if(!v)return;
- selectedVehicleId=id; const d=driverFor(id),sch=scheduleFor(id),ses=sessionFor(id),eta=estimate(v),c=chargerFor(v.charger),reason=riskReason(v);
+ selectedVehicleId=id; const d=driverFor(id),sch=scheduleFor(id),ses=sessionFor(id),eta=estimate(v),c=chargerFor(v.charger),reason=riskReason(v),ctx=vehicleContext(state,id);
  $('drawer-title').textContent=`${v.id} · ${v.name}`;
- $('drawer-subtitle').textContent=`${v.plate} · ${d?.department||'No group'}`;
+ $('drawer-subtitle').textContent=`${v.plate} · ${d?driverDepartment(d):'No group'}`;
  $('drawer-body').innerHTML=`
   ${reason?`<div class="ui-risk-banner"><strong>${v.status==='risk'?'Departure risk':'Action required'}</strong><span>${esc(reason)}</span></div>`:''}
   <section class="ui-detail-section"><h3>Readiness</h3><div class="ui-detail-grid"><div><span>Current SOC</span><strong>${v.battery}%</strong></div><div><span>Target SOC</span><strong>${v.target}%</strong></div><div><span>Ready ETA</span><strong class="${eta.late?'text-danger':''}">${esc(eta.label)}</strong></div><div><span>Departure</span><strong>${v.departure}</strong></div></div></section>
-  <section class="ui-detail-section"><h3>Assignment</h3><div class="ui-detail-list"><div><span>Driver</span><strong>${esc(d?.name||'Unassigned')}</strong></div><div><span>Route</span><strong>${esc(v.route)}</strong></div><div><span>Charger</span><strong>${esc(v.charger||'—')}</strong></div><div><span>Allocated power</span><strong>${v.power?`${v.power} kW`:'—'}</strong></div><div><span>Priority</span><strong class="text-capitalize">${esc(v.priority)}</strong></div></div></section>
-  <section class="ui-detail-section"><h3>Charging context</h3><div class="ui-detail-list"><div><span>Required energy</span><strong>${energyNeeded(v)} kWh</strong></div><div><span>Charger health</span><strong>${c?`${c.health}%`:'—'}</strong></div><div><span>Active session</span><strong>${ses?ses.id:'None'}</strong></div><div><span>Schedule</span><strong>${sch?`${sch.departure} – ${sch.return}`:'No schedule'}</strong></div></div></section>`;
+  <section class="ui-detail-section"><h3>Assignment</h3><div class="ui-detail-list"><div><span>Driver</span><strong>${esc(d?.name||'Unassigned')}</strong></div><div><span>Route</span><strong>${esc(vehicleRoute(v))}</strong></div><div><span>Charger</span><strong>${esc(v.charger||'—')}</strong></div><div><span>Allocated power</span><strong>${v.power?`${v.power} kW`:'—'}</strong></div><div><span>Priority</span><strong class="text-capitalize">${esc(v.priority)}</strong></div></div></section>
+  <section class="ui-detail-section"><h3>Charging context</h3><div class="ui-detail-list"><div><span>Required energy</span><strong>${energyNeeded(v)} kWh</strong></div><div><span>Charger health</span><strong>${c?`${c.health}%`:'—'}</strong></div><div><span>Active session</span><strong>${ses?ses.id:'None'}</strong></div><div><span>Schedule</span><strong>${sch?`${sch.departure} – ${sch.return}`:'No schedule'}</strong></div></div></section>
+  <section class="ui-detail-section"><h3>Related records</h3><div class="ui-inline-actions"><a class="button button--secondary" href="${contextUrl('vehicles.html',{vehicle:v.id})}">Vehicle profile</a>${ctx.driver?`<a class="button button--secondary" href="${contextUrl('drivers.html',{driver:ctx.driver.id})}">Driver</a>`:''}${ctx.schedule?`<a class="button button--secondary" href="${contextUrl('schedules.html',{schedule:ctx.schedule.id})}">Schedule</a>`:''}${ctx.reservation?`<a class="button button--secondary" href="${contextUrl('reservations.html',{reservation:ctx.reservation.id})}">Reservation</a>`:''}${ctx.session?`<a class="button button--secondary" href="${contextUrl('sessions.html',{session:ctx.session.id})}">Session</a>`:''}${ctx.charger?`<a class="button button--secondary" href="${contextUrl('depot.html',{charger:ctx.charger.id})}">Charger</a>`:''}</div></section>`;
  $('drawer-actions').innerHTML=`<button class="button button--secondary" data-action="assign" type="button">${v.charger==='—'?'Assign charger':'Reassign charger'}</button><button class="button button--secondary" data-action="target" type="button">Change target</button><button class="button button--primary" data-action="priority" type="button">Set priority</button>`;
  $('drawer-actions').querySelectorAll('[data-action]').forEach(b=>b.addEventListener('click',()=>openAction(b.dataset.action,id)));
 }
@@ -138,7 +144,7 @@ function bindTableEvents(){
  $('operations-table').querySelectorAll('tr[data-open-vehicle]').forEach(row=>row.addEventListener('click',e=>{if(e.target.closest('button'))return;openDrawer(row.dataset.openVehicle);}));
  $('operations-table').querySelectorAll('[data-menu]').forEach(btn=>btn.addEventListener('click',e=>{e.stopPropagation();actionMenu(btn.dataset.menu,btn);}));
 }
-function availableChargersFor(v){return state.chargers.filter(c=>['available','reserved'].includes(c.status)||c.vehicle===v.id);}
+function availableChargersFor(v){return compatibleChargersForVehicle(v,state.chargers,{live:true});}
 function openAction(action,id){
  const v=state.vehicles.find(x=>x.id===id); if(!v)return;pendingAction={action,id};
  const title=$('dialog-title'),desc=$('dialog-description'),body=$('dialog-body'),confirm=$('dialog-confirm');
@@ -146,15 +152,16 @@ function openAction(action,id){
   $('dialog-kicker').textContent='CHARGING PRIORITY';title.textContent=`Set priority · ${v.id}`;desc.textContent='Priority affects automatic power allocation and queue order.';
   body.innerHTML=`<div class="ops-choice-grid">${['critical','high','normal','low'].map(p=>`<label class="ops-choice ${v.priority===p?'is-selected':''}"><input type="radio" name="priority" value="${p}" ${v.priority===p?'checked':''}><strong>${p[0].toUpperCase()+p.slice(1)}</strong><span>${({critical:'Departure-critical; allocate power first',high:'Prioritize ahead of normal fleet',normal:'Standard fleet charging order',low:'Charge when capacity is available'})[p]}</span></label>`).join('')}</div>`;confirm.textContent='Save priority';
  } else if(action==='assign'){
-  const chargers=availableChargersFor(v);$('dialog-kicker').textContent='CHARGER ASSIGNMENT';title.textContent=`Assign charger · ${v.id}`;desc.textContent='Choose an available charger. Existing assignment will be released automatically.';
-  body.innerHTML=chargers.length?`<div class="ops-charger-options">${chargers.map(c=>`<label class="ops-charger-option ${v.charger===c.id?'is-selected':''}"><input type="radio" name="charger" value="${c.id}" ${v.charger===c.id?'checked':''}><span><strong>${c.id}</strong><small>${c.type} · ${c.power} kW · Bay ${c.bay}</small></span><span class="ui-pill status-pill status-${c.status==='available'?'available':'reserved'}">${c.status}</span></label>`).join('')}</div>`:'<div class="ops-dialog-empty">No compatible available chargers in this prototype.</div>';confirm.textContent='Confirm assignment';confirm.disabled=!chargers.length;
+  const chargers=availableChargersFor(v);$('dialog-kicker').textContent='CHARGER ASSIGNMENT';title.textContent=`Assign charger · ${v.id}`;desc.textContent=`Only chargers compatible with ${connectorLabelList(v)} are shown. Power is capped by the vehicle charging profile.`;
+  body.innerHTML=chargers.length?`<div class="ops-charger-options">${chargers.map(c=>{const fit=compatibilitySummary(v,c);return `<label class="ops-charger-option ${v.charger===c.id?'is-selected':''}"><input type="radio" name="charger" value="${c.id}" ${v.charger===c.id?'checked':''}><span><strong>${c.id}</strong><small>${fit.connector?.type||c.type} · ${fit.deliverableKw} kW usable of ${c.power} kW · Bay ${parkingBayCode(state,c.parkingBayId||c.bay)}</small></span><span class="ui-pill status-pill status-${c.status==='available'?'available':'reserved'}">${c.status}</span></label>`}).join('')}</div>`:`<div class="ops-dialog-empty">No compatible available chargers for ${connectorLabelList(v)} in this depot.</div>`;confirm.textContent='Confirm assignment';confirm.disabled=!chargers.length;
  } else if(action==='target'){
   $('dialog-kicker').textContent='TARGET SOC';title.textContent=`Change target · ${v.id}`;desc.textContent='Set the battery level required before departure.';
   body.innerHTML=`<div class="ops-target-control"><div><span>Current SOC</span><strong>${v.battery}%</strong></div><label><span>Target SOC</span><output id="target-output">${v.target}%</output><input id="target-range" type="range" min="${Math.max(v.battery,50)}" max="100" step="5" value="${v.target}"></label><p>Required energy estimate will be recalculated for the prototype after saving.</p></div>`;confirm.textContent='Save target';$('target-range').addEventListener('input',e=>$('target-output').textContent=`${e.target.value}%`);
  }
  dialog.showModal();
 }
-function releaseCurrentCharger(v){if(!v.charger||v.charger==='—')return;const old=chargerFor(v.charger);if(old){old.status='available';old.vehicle=null;}v.charger='—';v.power=0;}
+function setConnectorStatus(charger,connectorId,status){const connector=(charger?.connectors||[]).find(item=>String(item.id)===String(connectorId));if(connector)connector.status=status;}
+function releaseCurrentCharger(v){if(!v.charger||v.charger==='—')return;const old=chargerFor(v.charger);if(old){setConnectorStatus(old,v.chargerConnectorId,'available');old.status='available';old.vehicle=null;}v.charger='—';v.chargerConnectorId=null;v.power=0;}
 function applyAction() {
   if (!pendingAction) return;
 
@@ -174,22 +181,25 @@ function applyAction() {
     const cid = checkedCharger ? checkedCharger.value : '';
     if (!cid) return;
 
-    releaseCurrentCharger(v);
     const c = chargerFor(cid);
-    if (!c) return;
-
+    const connector = bestCompatibleConnector(v,c,{includeUnavailable:false});
+    if (!c || !connector || !availableChargersFor(v).some(item=>item.id===cid)) {showToast(`${cid||'Selected charger'} is not compatible or no longer available for ${v.id}.`);return;}
+    releaseCurrentCharger(v);
+    const usablePower=deliverablePowerKw(v,c);
+    const requested=v.priority==='critical'?Math.round(c.power*0.86):Math.round(c.power*0.72);
     c.status = 'busy';
     c.vehicle = v.id;
+    setConnectorStatus(c,connector.id,'busy');
     v.charger = cid;
-    v.power = Math.min(
-      c.power,
-      v.priority === 'critical' ? Math.round(c.power * 0.86) : Math.round(c.power * 0.72)
-    );
+    v.chargerConnectorId=connector.id;
+    v.power = Math.min(usablePower,requested);
     v.status = 'charging';
 
     const sess = sessionFor(v.id);
     if (sess) {
       sess.charger = cid;
+      sess.connector=connector.type;
+      sess.connectorId=connector.id;
       sess.power = v.power;
     } else {
       const driver = driverFor(v.id);
@@ -198,8 +208,10 @@ function applyAction() {
         vehicle: v.id,
         driver: driver ? driver.id : '—',
         charger: cid,
-        connector: c.type === 'DC' ? 'CCS2' : 'Type 2',
-        start: new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }),
+        depotId:v.depotId,
+        connector: connector.type,
+        connectorId:connector.id,
+        start: state.settings?.operationTime||'12:54',
         duration: '00:00',
         energy: 0,
         power: v.power,
@@ -243,7 +255,7 @@ function removeFromQueue(id){const v=state.vehicles.find(x=>x.id===id);if(!v)ret
 function openQueueManager(){
  const queued=state.vehicles.filter(v=>v.status==='queued').sort((a,b)=>priorityRank[a.priority]-priorityRank[b.priority]||minutes(a.departure)-minutes(b.departure));
  pendingAction={action:'queue-manager'};$('dialog-kicker').textContent='CHARGING QUEUE';$('dialog-title').textContent='Manage queue';$('dialog-description').textContent='Vehicles are ordered by priority and departure time.';
- $('dialog-body').innerHTML=queued.length?`<div class="ops-queue-manager">${queued.map((v,i)=>`<div><span class="queue-position">${i+1}</span><span><strong>${v.id} · ${esc(v.name)}</strong><small>${v.battery}% → ${v.target}% · ${v.route} · dep. ${v.departure}</small></span><span class="ui-pill priority-pill priority-${v.priority}">${v.priority}</span><button class="action-button" data-queue-assign="${v.id}" type="button">Assign</button></div>`).join('')}</div>`:'<div class="ops-dialog-empty">Charging queue is empty.</div>';
+ $('dialog-body').innerHTML=queued.length?`<div class="ops-queue-manager">${queued.map((v,i)=>`<div><span class="queue-position">${i+1}</span><span><strong>${v.id} · ${esc(v.name)}</strong><small>${v.battery}% → ${v.target}% · ${vehicleRoute(v)} · dep. ${v.departure}</small></span><span class="ui-pill priority-pill priority-${v.priority}">${v.priority}</span><button class="action-button" data-queue-assign="${v.id}" type="button">Assign</button></div>`).join('')}</div>`:'<div class="ops-dialog-empty">Charging queue is empty.</div>';
  $('dialog-confirm').style.display='none';dialog.showModal();$('dialog-body').querySelectorAll('[data-queue-assign]').forEach(b=>b.addEventListener('click',()=>{dialog.close();$('dialog-confirm').style.display='';openAction('assign',b.dataset.queueAssign);}));
 }
 
@@ -253,4 +265,7 @@ $('dialog-confirm').addEventListener('click',applyAction);dialog.addEventListene
 $('open-queue').addEventListener('click',openQueueManager);$('open-queue-secondary').addEventListener('click',openQueueManager);
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&drawer.classList.contains('is-open'))closeDrawer();});
 
-renderAll();
+const contextParams=new URLSearchParams(location.search);
+const requestedVehicle=contextParams.get('vehicle');
+if(requestedVehicle&&state.vehicles.some(v=>v.id===requestedVehicle)){search.value=requestedVehicle;renderAll();openDrawer(requestedVehicle);}else renderAll();
+}
